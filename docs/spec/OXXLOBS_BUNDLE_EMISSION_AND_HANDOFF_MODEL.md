@@ -56,3 +56,39 @@ The retained W004 baseline uses canonical JSON fixtures for replay-ready bundle 
    - `valid`
    - `notes`
 3. The validation output is a retained handoff witness, not a semantics claim.
+
+## 5. W005 retained witness baseline
+The retained W005 baseline uses canonical JSON fixtures for differential witness seeds.
+
+### 5.1 Witness fixture
+1. The `witness_seed_diff` scenario root retains `witness-seed.json`.
+2. Minimum retained fields are:
+   - `witness_schema`
+   - `source_bundle`
+   - `comparison_refs`
+   - `divergences`
+   - `lifecycle_state`
+   - `quarantine_reason`
+3. `source_bundle` preserves the originating Excel-side provenance and capture-loss lanes.
+
+### 5.2 DNA-side comparison refs
+1. Comparison refs retain:
+   - `lane_id`
+   - `producer_id`
+   - `artifact_ref`
+   - `adapter_id`
+   - `adapter_version`
+   - `capability_level`
+   - `engine_config_ref`
+2. W005 uses retained comparison refs rather than live sibling-repo execution.
+
+### 5.3 Divergence records
+1. Divergence records retain:
+   - `surface_id`
+   - `mismatch_kind`
+   - `severity`
+   - `excel_value_repr`
+   - `comparison_value_repr`
+   - `comparison_capture_loss_note`
+   - `explanatory_note`
+2. The retained divergence fixture must preserve enough provenance and lossiness to remain replay/diff/explain-ready without claiming semantic authority.

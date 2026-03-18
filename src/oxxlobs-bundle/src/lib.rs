@@ -39,6 +39,75 @@ pub struct HandoffValidationOutput {
     pub notes: Vec<String>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum AdapterCapabilityLevel {
+    C0IngestValid,
+    C1ReplayValid,
+    C2DiffValid,
+    C3ExplainValid,
+    C4DistillValid,
+    C5PackValid,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ComparisonArtifactRef {
+    pub lane_id: String,
+    pub producer_id: String,
+    pub artifact_ref: String,
+    pub adapter_id: String,
+    pub adapter_version: String,
+    pub capability_level: AdapterCapabilityLevel,
+    pub engine_config_ref: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum MismatchKind {
+    ValueMismatch,
+    ErrorMismatch,
+    MissingSurface,
+    CaptureLossDifference,
+    StatusMismatch,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum WitnessSeverity {
+    Info,
+    Warning,
+    Error,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct DivergenceRecord {
+    pub surface_id: String,
+    pub mismatch_kind: MismatchKind,
+    pub severity: WitnessSeverity,
+    pub excel_value_repr: Option<String>,
+    pub comparison_value_repr: Option<String>,
+    pub comparison_capture_loss_note: Option<String>,
+    pub explanatory_note: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum WitnessLifecycleState {
+    ExplanatoryOnly,
+    RetainedLocal,
+    Quarantined,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct DifferentialWitnessSeed {
+    pub witness_schema: String,
+    pub source_bundle: ReplayReadyBundleSeed,
+    pub comparison_refs: Vec<ComparisonArtifactRef>,
+    pub divergences: Vec<DivergenceRecord>,
+    pub lifecycle_state: WitnessLifecycleState,
+    pub quarantine_reason: Option<String>,
+}
+
 #[derive(Debug, Error, PartialEq, Eq)]
 pub enum BundleSeedError {
     #[error(transparent)]
@@ -59,6 +128,36 @@ pub enum BundleSeedError {
     AbsoluteSidecarPath(usize),
     #[error("sidecar `{0}` is missing a media type")]
     BlankSidecarMediaType(usize),
+}
+
+#[derive(Debug, Error, PartialEq, Eq)]
+pub enum WitnessSeedError {
+    #[error(transparent)]
+    InvalidSourceBundle(#[from] BundleSeedError),
+    #[error("witness schema must not be blank")]
+    BlankWitnessSchema,
+    #[error("witness seed must declare at least one comparison ref")]
+    MissingComparisonRef,
+    #[error("comparison ref `{0}` is missing a lane id")]
+    BlankComparisonLaneId(usize),
+    #[error("comparison ref `{0}` is missing an artifact ref")]
+    BlankComparisonArtifactRef(usize),
+    #[error("comparison ref `{0}` is missing an adapter id")]
+    BlankComparisonAdapterId(usize),
+    #[error("comparison ref `{0}` is missing an adapter version")]
+    BlankComparisonAdapterVersion(usize),
+    #[error("comparison ref `{0}` is missing an engine config ref")]
+    BlankComparisonEngineConfigRef(usize),
+    #[error("witness seed must retain at least one divergence")]
+    MissingDivergence,
+    #[error("divergence `{0}` is missing a surface id")]
+    BlankDivergenceSurfaceId(usize),
+    #[error("divergence `{0}` is missing an explanatory note")]
+    BlankDivergenceNote(usize),
+    #[error("quarantined witnesses must retain a quarantine reason")]
+    MissingQuarantineReason,
+    #[error("non-quarantined witnesses must not retain a quarantine reason")]
+    UnexpectedQuarantineReason,
 }
 
 pub fn assemble_bundle_seed(
@@ -160,17 +259,84 @@ fn is_absolute_repo_path(path: &str) -> bool {
         || (normalized.len() > 1 && normalized.as_bytes()[1] == b':')
 }
 
+pub fn validate_witness_seed(seed: &DifferentialWitnessSeed) -> Result<(), WitnessSeedError> {
+    validate_bundle_seed(&seed.source_bundle)?;
+
+    if seed.witness_schema.trim().is_empty() {
+        return Err(WitnessSeedError::BlankWitnessSchema);
+    }
+
+    if seed.comparison_refs.is_empty() {
+        return Err(WitnessSeedError::MissingComparisonRef);
+    }
+
+    for (index, comparison_ref) in seed.comparison_refs.iter().enumerate() {
+        if comparison_ref.lane_id.trim().is_empty() {
+            return Err(WitnessSeedError::BlankComparisonLaneId(index));
+        }
+        if comparison_ref.artifact_ref.trim().is_empty() {
+            return Err(WitnessSeedError::BlankComparisonArtifactRef(index));
+        }
+        if comparison_ref.adapter_id.trim().is_empty() {
+            return Err(WitnessSeedError::BlankComparisonAdapterId(index));
+        }
+        if comparison_ref.adapter_version.trim().is_empty() {
+            return Err(WitnessSeedError::BlankComparisonAdapterVersion(index));
+        }
+        if comparison_ref.engine_config_ref.trim().is_empty() {
+            return Err(WitnessSeedError::BlankComparisonEngineConfigRef(index));
+        }
+    }
+
+    if seed.divergences.is_empty() {
+        return Err(WitnessSeedError::MissingDivergence);
+    }
+
+    for (index, divergence) in seed.divergences.iter().enumerate() {
+        if divergence.surface_id.trim().is_empty() {
+            return Err(WitnessSeedError::BlankDivergenceSurfaceId(index));
+        }
+        if divergence.explanatory_note.trim().is_empty() {
+            return Err(WitnessSeedError::BlankDivergenceNote(index));
+        }
+    }
+
+    match seed.lifecycle_state {
+        WitnessLifecycleState::Quarantined => {
+            if seed
+                .quarantine_reason
+                .as_ref()
+                .map(|reason| reason.trim().is_empty())
+                .unwrap_or(true)
+            {
+                return Err(WitnessSeedError::MissingQuarantineReason);
+            }
+        }
+        _ => {
+            if seed.quarantine_reason.is_some() {
+                return Err(WitnessSeedError::UnexpectedQuarantineReason);
+            }
+        }
+    }
+
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::{
-        BundleSeedError, HandoffValidationOutput, ReplayReadyBundleSeed, assemble_bundle_seed,
-        validate_bundle_seed, validate_handoff,
+        BundleSeedError, DifferentialWitnessSeed, HandoffValidationOutput, ReplayReadyBundleSeed,
+        WitnessLifecycleState, WitnessSeedError, assemble_bundle_seed, validate_bundle_seed,
+        validate_handoff, validate_witness_seed,
     };
 
     const BUNDLE_FIXTURE: &str =
         include_str!("../../../docs/test-corpus/bundles/xlobs_bundle_seed_handoff_001/bundle.json");
     const HANDOFF_FIXTURE: &str = include_str!(
         "../../../docs/test-corpus/bundles/xlobs_bundle_seed_handoff_001/handoff-validation.json"
+    );
+    const WITNESS_FIXTURE: &str = include_str!(
+        "../../../docs/test-corpus/bundles/xlobs_witness_seed_divergence_001/witness-seed.json"
     );
 
     fn load_bundle_fixture() -> ReplayReadyBundleSeed {
@@ -179,6 +345,10 @@ mod tests {
 
     fn load_handoff_fixture() -> HandoffValidationOutput {
         serde_json::from_str(HANDOFF_FIXTURE).expect("handoff fixture should deserialize")
+    }
+
+    fn load_witness_fixture() -> DifferentialWitnessSeed {
+        serde_json::from_str(WITNESS_FIXTURE).expect("witness fixture should deserialize")
     }
 
     #[test]
@@ -220,5 +390,22 @@ mod tests {
         seed.sidecars[0].path = "C:/absolute/path.md".to_owned();
         let err = validate_bundle_seed(&seed).expect_err("expected absolute sidecar path to fail");
         assert_eq!(err, BundleSeedError::AbsoluteSidecarPath(0));
+    }
+
+    #[test]
+    fn validates_witness_fixture() {
+        let witness = load_witness_fixture();
+        validate_witness_seed(&witness).expect("expected valid witness fixture");
+        assert_eq!(witness.comparison_refs[0].lane_id, "OxCalc");
+    }
+
+    #[test]
+    fn rejects_quarantined_witness_without_reason() {
+        let mut witness = load_witness_fixture();
+        witness.lifecycle_state = WitnessLifecycleState::Quarantined;
+        witness.quarantine_reason = None;
+        let err = validate_witness_seed(&witness)
+            .expect_err("expected quarantined witness without reason to fail");
+        assert_eq!(err, WitnessSeedError::MissingQuarantineReason);
     }
 }

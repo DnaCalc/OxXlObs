@@ -18,8 +18,9 @@
    - objective: emit canonical replay-ready bundles for `OxReplay`.
    - current baseline: canonical bundle seed and handoff validation fixtures exist and validate for the declared W004 scope.
 5. `W005_DIFFERENTIAL_WITNESS_SEED_BASELINE`
-   - status: planned
+   - status: complete
    - objective: shape Excel-vs-DNA divergences into replay/diff/explain-ready witness seeds.
+   - current baseline: canonical witness-seed fixture exists and validates for the declared W005 scope.
 6. `W006_STABLE_WINDOWS_EXECUTION_DRIVER`
    - status: planned
    - objective: stand up the first stable Windows execution path for repeatable observation runs.
@@ -27,7 +28,7 @@
 ## Activation note
 1. The Rust-first stack is declared for the repo.
 2. OxXlObs is centered on observation-to-replay compilation from the first workset.
-3. `W005` and `W006` remain sequenced after `W004`; activation still depends on explicit scope, named capability/pack impact, and declared dependencies.
+3. `W006` remains sequenced after `W005`; activation still depends on explicit scope, named capability/pack impact, and declared dependencies.
 
 ## Reserved follow-on lane entry
 1. `OxReplay` is the first consumer expected to validate bundle quality and replay readiness.

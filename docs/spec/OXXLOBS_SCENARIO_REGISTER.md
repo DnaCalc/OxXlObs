@@ -26,3 +26,6 @@ This document assigns stable scenario ids for the first OxXlObs bootstrap workse
 
 ## 5. W004 retained files
 1. `bundle_seed_basic` retains `bundle.json` and `handoff-validation.json`.
+
+## 6. W005 retained files
+1. `witness_seed_diff` retains `witness-seed.json`.
