@@ -1,9 +1,10 @@
 # xlobs_provenance_excel_build_001
 
 - Replay class: `provenance_minimal`
-- Status: `scaffolded`
+- Status: `partial`
 - Retained root declared in: `docs/spec/OXXLOBS_SCENARIO_REGISTER.md`
+- Retained files present: `provenance.json`, `bridge.json`
 
-This directory is reserved for the baseline provenance fixture set covering Excel build and host metadata.
+This directory now carries the W003 baseline provenance fixture set covering Excel build, host metadata, and bridge envelope identity.
 
-No retained observation artifact is present yet.
+It is retained shape evidence for provenance validation, not yet an Excel-driven observation run.

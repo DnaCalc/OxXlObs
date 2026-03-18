@@ -19,3 +19,7 @@ This document assigns stable scenario ids for the first OxXlObs bootstrap workse
 1. `scenario_manifest_valid` and `scenario_manifest_invalid` roots retain `scenario.json`.
 2. `capture_surface_basic` and `capture_loss_marked` roots retain both `scenario.json` and `capture.json`.
 3. Later-workset roots may remain scaffolded until their worksets advance beyond planning.
+
+## 4. W003 retained files
+1. `provenance_minimal` retains `provenance.json` and `bridge.json`.
+2. `provenance_minimal` also retains `states/excel/xlobs_provenance_excel_build_001/environment.json`.

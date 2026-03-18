@@ -52,6 +52,22 @@ pub struct ObservableSurface {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
+pub enum InterpretationLimitKind {
+    FormulaTextUnavailable,
+    MacroSecurityOpaque,
+    WorkbookFingerprintPartial,
+    TransportOpaque,
+    ValueRenderingNormalized,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct InterpretationLimit {
+    pub kind: InterpretationLimitKind,
+    pub detail: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum SurfaceStatus {
     Direct,
     Derived,
@@ -75,4 +91,10 @@ pub enum ObservationUncertainty {
     Sampled,
     PostProcessed,
     WorkbookIdentityAssumed,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub struct CaptureInterpretation {
+    pub bridge_influenced: bool,
+    pub interpretation_limits: Vec<InterpretationLimit>,
 }

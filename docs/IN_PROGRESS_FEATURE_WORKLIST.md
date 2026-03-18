@@ -10,8 +10,9 @@
    - objective: stand up scenario declarations, observable surfaces, and lossiness markers.
    - current baseline: retained manifest and capture-shape fixtures exist under `docs/test-corpus/excel/`; Excel-driven observation evidence is still absent.
 3. `W003_ENVIRONMENT_FINGERPRINT_AND_BRIDGE_ENVELOPE`
-   - status: planned
+   - status: in_progress
    - objective: pin Excel build, host environment, and bridge metadata for retained runs.
+   - current baseline: retained provenance, bridge, and environment fingerprint fixtures exist; live driver exercise remains deferred to `W006`.
 4. `W004_REPLAY_READY_BUNDLE_EMISSION_AND_HANDOFF`
    - status: planned
    - objective: emit canonical replay-ready bundles for `OxReplay`.
@@ -25,7 +26,7 @@
 ## Activation note
 1. The Rust-first stack is declared for the repo.
 2. OxXlObs is centered on observation-to-replay compilation from the first workset.
-3. `W003` through `W006` remain planned until `W002` has emitted retained scenario and capture-shape fixtures.
+3. `W004` through `W006` remain planned until `W003` has emitted retained provenance and environment fingerprint fixtures.
 
 ## Reserved follow-on lane entry
 1. `OxReplay` is the first consumer expected to validate bundle quality and replay readiness.

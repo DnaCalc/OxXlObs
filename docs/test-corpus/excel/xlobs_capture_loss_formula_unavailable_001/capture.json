@@ -24,5 +24,14 @@
       "capture_loss": "formula_unavailable",
       "uncertainty": "none"
     }
-  ]
+  ],
+  "interpretation": {
+    "bridge_influenced": true,
+    "interpretation_limits": [
+      {
+        "kind": "formula_text_unavailable",
+        "detail": "Baseline fixture models a bridge path where formula text capture is unavailable."
+      }
+    ]
+  }
 }

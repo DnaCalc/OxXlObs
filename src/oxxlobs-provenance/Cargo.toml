@@ -9,7 +9,12 @@ publish.workspace = true
 
 [dependencies]
 oxxlobs-abstractions = { path = "../oxxlobs-abstractions" }
+oxxlobs-bridge = { path = "../oxxlobs-bridge" }
 serde.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
 
 [lints]
 workspace = true

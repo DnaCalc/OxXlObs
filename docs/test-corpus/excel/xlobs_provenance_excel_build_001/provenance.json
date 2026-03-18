@@ -1,0 +1,39 @@
+{
+  "scenario_id": "xlobs_provenance_excel_build_001",
+  "run_id": "run_xlobs_provenance_excel_build_001_20260318_0001",
+  "workbook_ref": "fixtures/provenance-excel-build.xlsx",
+  "workbook_fingerprint": "sha256:8d0896f8f1457f9470ff0ed04e522b06d2f4d0a0a6e58be4d6f2e4fba9f8079d",
+  "excel_version": "16.0",
+  "excel_build": "17328.20142",
+  "excel_channel": "current",
+  "host_os": "Windows 11",
+  "host_architecture": "x64",
+  "macro_mode": "disabled",
+  "automation_policy": "clean_room_declared",
+  "captured_at_utc": "2026-03-18T11:42:00Z",
+  "timezone": "Africa/Johannesburg",
+  "declared_surface_ids": [
+    "workbook_identity",
+    "sheet1_a1_value"
+  ],
+  "capture_loss_summary": [
+    "environment_partial"
+  ],
+  "uncertainty_summary": [
+    "workbook_identity_assumed"
+  ],
+  "bridge": {
+    "scenario_id": "xlobs_provenance_excel_build_001",
+    "bridge_kind": "dot_net_bridge",
+    "bridge_version": "0.3.0",
+    "executable_identity": "OxXlObs.ExcelBridge.dll@0.3.0",
+    "command_channel": "stdio-json",
+    "invocation_mode": "dot_net_interop",
+    "interpretation_limits": [
+      {
+        "kind": "workbook_fingerprint_partial",
+        "detail": "Workbook fingerprint excludes embedded preview cache blobs in the retained baseline fixture."
+      }
+    ]
+  }
+}

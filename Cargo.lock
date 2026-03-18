@@ -27,6 +27,8 @@ version = "0.1.0"
 dependencies = [
  "oxxlobs-abstractions",
  "serde",
+ "serde_json",
+ "thiserror",
 ]
 
 [[package]]
@@ -34,6 +36,7 @@ name = "oxxlobs-bundle"
 version = "0.1.0"
 dependencies = [
  "oxxlobs-abstractions",
+ "oxxlobs-bridge",
  "oxxlobs-capture",
  "oxxlobs-provenance",
  "oxxlobs-scenario",
@@ -63,7 +66,10 @@ name = "oxxlobs-provenance"
 version = "0.1.0"
 dependencies = [
  "oxxlobs-abstractions",
+ "oxxlobs-bridge",
  "serde",
+ "serde_json",
+ "thiserror",
 ]
 
 [[package]]

@@ -1,6 +1,8 @@
 #![forbid(unsafe_code)]
 
-use oxxlobs_abstractions::{CaptureLoss, ObservableSurface, ObservationUncertainty, SurfaceStatus};
+use oxxlobs_abstractions::{
+    CaptureInterpretation, CaptureLoss, ObservableSurface, ObservationUncertainty, SurfaceStatus,
+};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
@@ -16,6 +18,8 @@ pub struct ObservedSurface {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ObservationCapture {
     pub surfaces: Vec<ObservedSurface>,
+    #[serde(default)]
+    pub interpretation: CaptureInterpretation,
 }
 
 #[derive(Debug, Error, PartialEq, Eq)]
@@ -28,11 +32,27 @@ pub enum CaptureValidationError {
     UnavailableSurfaceHasValue(String),
     #[error("surface `{0}` is unavailable but has no capture-loss marker")]
     UnavailableSurfaceMissingCaptureLoss(String),
+    #[error("capture marks bridge influence but declares no interpretation limits")]
+    MissingInterpretationLimit,
+    #[error("capture declares interpretation limits without marking bridge influence")]
+    InterpretationLimitWithoutBridgeInfluence,
 }
 
 pub fn validate_capture(capture: &ObservationCapture) -> Result<(), CaptureValidationError> {
     if capture.surfaces.is_empty() {
         return Err(CaptureValidationError::EmptyCapture);
+    }
+
+    if capture.interpretation.bridge_influenced
+        && capture.interpretation.interpretation_limits.is_empty()
+    {
+        return Err(CaptureValidationError::MissingInterpretationLimit);
+    }
+
+    if !capture.interpretation.bridge_influenced
+        && !capture.interpretation.interpretation_limits.is_empty()
+    {
+        return Err(CaptureValidationError::InterpretationLimitWithoutBridgeInfluence);
     }
 
     for surface in &capture.surfaces {
@@ -74,8 +94,8 @@ pub fn validate_capture(capture: &ObservationCapture) -> Result<(), CaptureValid
 mod tests {
     use super::{CaptureValidationError, ObservationCapture, ObservedSurface, validate_capture};
     use oxxlobs_abstractions::{
-        CaptureLoss, ObservableSurface, ObservableSurfaceKind, ObservationUncertainty,
-        SurfaceStatus,
+        CaptureInterpretation, CaptureLoss, ObservableSurface, ObservableSurfaceKind,
+        ObservationUncertainty, SurfaceStatus,
     };
 
     const BASIC_CAPTURE_FIXTURE: &str = include_str!(
@@ -94,6 +114,7 @@ mod tests {
         let capture = load_fixture(BASIC_CAPTURE_FIXTURE);
         validate_capture(&capture).expect("expected valid capture fixture");
         assert_eq!(capture.surfaces.len(), 2);
+        assert!(!capture.interpretation.bridge_influenced);
     }
 
     #[test]
@@ -105,6 +126,7 @@ mod tests {
             capture.surfaces[1].capture_loss,
             CaptureLoss::FormulaUnavailable
         );
+        assert!(capture.interpretation.bridge_influenced);
     }
 
     #[test]
@@ -122,6 +144,7 @@ mod tests {
                 capture_loss: CaptureLoss::None,
                 uncertainty: ObservationUncertainty::None,
             }],
+            interpretation: CaptureInterpretation::default(),
         };
 
         let err = validate_capture(&capture)
@@ -132,5 +155,31 @@ mod tests {
                 "sheet1_a1_formula".to_owned(),
             )
         );
+    }
+
+    #[test]
+    fn rejects_bridge_influence_without_limits() {
+        let capture = ObservationCapture {
+            surfaces: vec![ObservedSurface {
+                surface: ObservableSurface {
+                    surface_id: "sheet1_a1_value".to_owned(),
+                    surface_kind: ObservableSurfaceKind::CellValue,
+                    locator: "Sheet1!A1".to_owned(),
+                    required: true,
+                },
+                status: SurfaceStatus::Direct,
+                value_repr: Some("42".to_owned()),
+                capture_loss: CaptureLoss::None,
+                uncertainty: ObservationUncertainty::None,
+            }],
+            interpretation: CaptureInterpretation {
+                bridge_influenced: true,
+                interpretation_limits: Vec::new(),
+            },
+        };
+
+        let err =
+            validate_capture(&capture).expect_err("expected missing interpretation limits to fail");
+        assert_eq!(err, CaptureValidationError::MissingInterpretationLimit);
     }
 }
