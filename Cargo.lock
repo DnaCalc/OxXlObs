@@ -47,6 +47,8 @@ version = "0.1.0"
 dependencies = [
  "oxxlobs-abstractions",
  "serde",
+ "serde_json",
+ "thiserror",
 ]
 
 [[package]]
@@ -70,6 +72,7 @@ version = "0.1.0"
 dependencies = [
  "oxxlobs-abstractions",
  "serde",
+ "serde_json",
  "thiserror",
 ]
 

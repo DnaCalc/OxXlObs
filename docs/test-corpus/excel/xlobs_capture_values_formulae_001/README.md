@@ -1,9 +1,10 @@
 # xlobs_capture_values_formulae_001
 
 - Replay class: `capture_surface_basic`
-- Status: `scaffolded`
+- Status: `partial`
 - Retained root declared in: `docs/spec/OXXLOBS_SCENARIO_REGISTER.md`
+- Retained files present: `scenario.json`, `capture.json`
 
-This directory is reserved for the baseline capture fixture set covering observed values and formula text where accessible.
+This directory now carries the W002 baseline capture-shape fixture set for direct value and formula-text surfaces.
 
-No retained observation artifact is present yet.
+It is retained shape evidence for capture validation, not yet an Excel-driven observation run.

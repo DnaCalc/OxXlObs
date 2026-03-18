@@ -1,8 +1,8 @@
 #![forbid(unsafe_code)]
 
-use oxxlobs_capture::ObservationCapture;
+use oxxlobs_capture::{CaptureValidationError, ObservationCapture, validate_capture};
 use oxxlobs_provenance::ObservationProvenance;
-use oxxlobs_scenario::ObservationScenario;
+use oxxlobs_scenario::{ObservationScenario, ScenarioValidationError, validate_scenario};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
@@ -15,23 +15,26 @@ pub struct ReplayReadyBundleSeed {
 
 #[derive(Debug, Error, PartialEq, Eq)]
 pub enum BundleSeedError {
-    #[error("bundle seed must contain at least one observed surface")]
-    EmptyCapture,
+    #[error(transparent)]
+    InvalidScenario(#[from] ScenarioValidationError),
+    #[error(transparent)]
+    InvalidCapture(#[from] CaptureValidationError),
 }
 
 pub fn validate_bundle_seed(seed: &ReplayReadyBundleSeed) -> Result<(), BundleSeedError> {
-    if seed.capture.surfaces.is_empty() {
-        return Err(BundleSeedError::EmptyCapture);
-    }
-
+    validate_scenario(&seed.scenario)?;
+    validate_capture(&seed.capture)?;
     Ok(())
 }
 
 #[cfg(test)]
 mod tests {
     use super::{BundleSeedError, ReplayReadyBundleSeed, validate_bundle_seed};
-    use oxxlobs_abstractions::{BridgeKind, ScenarioId};
-    use oxxlobs_capture::ObservationCapture;
+    use oxxlobs_abstractions::{
+        BridgeKind, CaptureLoss, ObservableSurface, ObservableSurfaceKind, ObservationUncertainty,
+        ReplayClass, ScenarioId, SurfaceStatus,
+    };
+    use oxxlobs_capture::{CaptureValidationError, ObservationCapture, ObservedSurface};
     use oxxlobs_provenance::ObservationProvenance;
     use oxxlobs_scenario::ObservationScenario;
 
@@ -40,9 +43,16 @@ mod tests {
         let seed = ReplayReadyBundleSeed {
             scenario: ObservationScenario {
                 scenario_id: ScenarioId("xlobs_bundle_seed_handoff_001".to_owned()),
+                replay_class: ReplayClass::BundleSeedBasic,
+                retained_root: "docs/test-corpus/bundles/xlobs_bundle_seed_handoff_001".to_owned(),
                 workbook_ref: "fixtures/book.xlsx".to_owned(),
                 trigger: "recalc".to_owned(),
-                observable_surfaces: vec!["Sheet1!A1".to_owned()],
+                observable_surfaces: vec![ObservableSurface {
+                    surface_id: "sheet1_a1_value".to_owned(),
+                    surface_kind: ObservableSurfaceKind::CellValue,
+                    locator: "Sheet1!A1".to_owned(),
+                    required: true,
+                }],
             },
             provenance: ObservationProvenance {
                 scenario_id: ScenarioId("xlobs_bundle_seed_handoff_001".to_owned()),
@@ -58,6 +68,52 @@ mod tests {
         };
 
         let err = validate_bundle_seed(&seed).expect_err("expected invalid bundle seed");
-        assert_eq!(err, BundleSeedError::EmptyCapture);
+        assert_eq!(
+            err,
+            BundleSeedError::InvalidCapture(CaptureValidationError::EmptyCapture)
+        );
+    }
+
+    #[test]
+    fn accepts_minimal_valid_bundle_seed() {
+        let seed = ReplayReadyBundleSeed {
+            scenario: ObservationScenario {
+                scenario_id: ScenarioId("xlobs_bundle_seed_handoff_001".to_owned()),
+                replay_class: ReplayClass::BundleSeedBasic,
+                retained_root: "docs/test-corpus/bundles/xlobs_bundle_seed_handoff_001".to_owned(),
+                workbook_ref: "fixtures/book.xlsx".to_owned(),
+                trigger: "recalc".to_owned(),
+                observable_surfaces: vec![ObservableSurface {
+                    surface_id: "sheet1_a1_value".to_owned(),
+                    surface_kind: ObservableSurfaceKind::CellValue,
+                    locator: "Sheet1!A1".to_owned(),
+                    required: true,
+                }],
+            },
+            provenance: ObservationProvenance {
+                scenario_id: ScenarioId("xlobs_bundle_seed_handoff_001".to_owned()),
+                excel_version: "16.0".to_owned(),
+                excel_build: "17328".to_owned(),
+                host_os: "Windows".to_owned(),
+                bridge_kind: BridgeKind::PureRust,
+                bridge_version: "0.1.0".to_owned(),
+            },
+            capture: ObservationCapture {
+                surfaces: vec![ObservedSurface {
+                    surface: ObservableSurface {
+                        surface_id: "sheet1_a1_value".to_owned(),
+                        surface_kind: ObservableSurfaceKind::CellValue,
+                        locator: "Sheet1!A1".to_owned(),
+                        required: true,
+                    },
+                    status: SurfaceStatus::Direct,
+                    value_repr: Some("42".to_owned()),
+                    capture_loss: CaptureLoss::None,
+                    uncertainty: ObservationUncertainty::None,
+                }],
+            },
+        };
+
+        validate_bundle_seed(&seed).expect("expected valid bundle seed");
     }
 }

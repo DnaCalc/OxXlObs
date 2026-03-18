@@ -1,0 +1,28 @@
+{
+  "surfaces": [
+    {
+      "surface": {
+        "surface_id": "sheet1_a1_value",
+        "surface_kind": "cell_value",
+        "locator": "Sheet1!A1",
+        "required": true
+      },
+      "status": "direct",
+      "value_repr": "42",
+      "capture_loss": "none",
+      "uncertainty": "none"
+    },
+    {
+      "surface": {
+        "surface_id": "sheet1_a1_formula",
+        "surface_kind": "formula_text",
+        "locator": "Sheet1!A1",
+        "required": false
+      },
+      "status": "direct",
+      "value_repr": "=SUM(B1:B3)",
+      "capture_loss": "none",
+      "uncertainty": "none"
+    }
+  ]
+}

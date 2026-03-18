@@ -1,9 +1,10 @@
 # xlobs_manifest_invalid_missing_surface_001
 
 - Replay class: `scenario_manifest_invalid`
-- Status: `scaffolded`
+- Status: `partial`
 - Retained root declared in: `docs/spec/OXXLOBS_SCENARIO_REGISTER.md`
+- Retained files present: `scenario.json`
 
-This directory is reserved for the invalid scenario-manifest fixture set that omits an observable surface.
+This directory now carries the W002 baseline manifest fixture for a scenario declaration that omits observable surfaces.
 
-No retained observation artifact is present yet.
+It is retained shape evidence for a negative validation path, not yet an Excel-driven observation run.

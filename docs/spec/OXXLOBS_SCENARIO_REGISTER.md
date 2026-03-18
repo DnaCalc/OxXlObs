@@ -14,3 +14,8 @@ This document assigns stable scenario ids for the first OxXlObs bootstrap workse
 | `provenance_minimal` | `xlobs_provenance_excel_build_001` | `docs/test-corpus/excel/xlobs_provenance_excel_build_001/` |
 | `bundle_seed_basic` | `xlobs_bundle_seed_handoff_001` | `docs/test-corpus/bundles/xlobs_bundle_seed_handoff_001/` |
 | `witness_seed_diff` | `xlobs_witness_seed_divergence_001` | `docs/test-corpus/bundles/xlobs_witness_seed_divergence_001/` |
+
+## 3. W002 retained files
+1. `scenario_manifest_valid` and `scenario_manifest_invalid` roots retain `scenario.json`.
+2. `capture_surface_basic` and `capture_loss_marked` roots retain both `scenario.json` and `capture.json`.
+3. Later-workset roots may remain scaffolded until their worksets advance beyond planning.

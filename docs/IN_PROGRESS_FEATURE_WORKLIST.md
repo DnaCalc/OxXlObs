@@ -8,6 +8,7 @@
 2. `W002_SCENARIO_AND_CAPTURE_CONTRACT_BASELINE`
    - status: in_progress
    - objective: stand up scenario declarations, observable surfaces, and lossiness markers.
+   - current baseline: retained manifest and capture-shape fixtures exist under `docs/test-corpus/excel/`; Excel-driven observation evidence is still absent.
 3. `W003_ENVIRONMENT_FINGERPRINT_AND_BRIDGE_ENVELOPE`
    - status: planned
    - objective: pin Excel build, host environment, and bridge metadata for retained runs.

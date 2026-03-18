@@ -1,9 +1,10 @@
 # xlobs_manifest_minimal_valid_001
 
 - Replay class: `scenario_manifest_valid`
-- Status: `scaffolded`
+- Status: `partial`
 - Retained root declared in: `docs/spec/OXXLOBS_SCENARIO_REGISTER.md`
+- Retained files present: `scenario.json`
 
-This directory is reserved for the minimal valid scenario-manifest fixture set.
+This directory now carries the W002 baseline manifest fixture for a minimal valid scenario declaration.
 
-No retained observation artifact is present yet.
+It is retained shape evidence for scenario validation, not yet an Excel-driven observation run.

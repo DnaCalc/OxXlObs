@@ -1,9 +1,10 @@
 # xlobs_capture_loss_formula_unavailable_001
 
 - Replay class: `capture_loss_marked`
-- Status: `scaffolded`
+- Status: `partial`
 - Retained root declared in: `docs/spec/OXXLOBS_SCENARIO_REGISTER.md`
+- Retained files present: `scenario.json`, `capture.json`
 
-This directory is reserved for the capture-loss fixture set where formula text is unavailable and lossiness must be explicit.
+This directory now carries the W002 baseline capture-shape fixture set for an unavailable formula surface with explicit lossiness.
 
-No retained observation artifact is present yet.
+It is retained shape evidence for capture-loss validation, not yet an Excel-driven observation run.

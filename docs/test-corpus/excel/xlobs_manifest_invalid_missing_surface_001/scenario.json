@@ -1,0 +1,8 @@
+{
+  "scenario_id": "xlobs_manifest_invalid_missing_surface_001",
+  "replay_class": "scenario_manifest_invalid",
+  "retained_root": "docs/test-corpus/excel/xlobs_manifest_invalid_missing_surface_001",
+  "workbook_ref": "fixtures/invalid-missing-surface.xlsx",
+  "trigger": "open_then_recalc",
+  "observable_surfaces": []
+}

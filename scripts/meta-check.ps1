@@ -6,14 +6,26 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+function Invoke-Checked {
+    param(
+        [string]$FilePath,
+        [string[]]$ArgumentList
+    )
+
+    & $FilePath @ArgumentList
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
+}
+
 if (-not $NoFmt) {
-    cargo fmt --all --check
+    Invoke-Checked cargo @("fmt", "--all", "--check")
 }
 
 if (-not $NoClippy) {
-    cargo clippy --workspace --all-targets --all-features -- -D warnings
+    Invoke-Checked cargo @("clippy", "--workspace", "--all-targets", "--all-features", "--", "-D", "warnings")
 }
 
 if (-not $NoTest) {
-    cargo test --workspace
+    Invoke-Checked cargo @("test", "--workspace")
 }
