@@ -1,0 +1,14 @@
+# OxXlObs Worksets
+
+Worksets are the execution units for OxXlObs.
+
+## Bootstrap sequence
+1. `W001_REPO_BOOTSTRAP_AND_BOUNDARY.md`
+2. `W002_SCENARIO_AND_CAPTURE_CONTRACT_BASELINE.md`
+3. `W003_ENVIRONMENT_FINGERPRINT_AND_BRIDGE_ENVELOPE.md`
+4. `W004_REPLAY_READY_BUNDLE_EMISSION_AND_HANDOFF.md`
+5. `W005_DIFFERENTIAL_WITNESS_SEED_BASELINE.md`
+6. `W006_STABLE_WINDOWS_EXECUTION_DRIVER.md`
+
+## Workset rule
+Workset files in this directory are the execution packets for OxXlObs.
