@@ -23,3 +23,6 @@ This document assigns stable scenario ids for the first OxXlObs bootstrap workse
 ## 4. W003 retained files
 1. `provenance_minimal` retains `provenance.json` and `bridge.json`.
 2. `provenance_minimal` also retains `states/excel/xlobs_provenance_excel_build_001/environment.json`.
+
+## 5. W004 retained files
+1. `bundle_seed_basic` retains `bundle.json` and `handoff-validation.json`.

@@ -1,0 +1,13 @@
+{
+  "bundle_schema": "oxxlobs.replay_bundle_seed.v1",
+  "checked_consumers": [
+    "OxReplay",
+    "OxCalc"
+  ],
+  "valid": true,
+  "notes": [
+    "bundle schema present",
+    "replay consumers declared",
+    "all sidecar refs are repo-relative"
+  ]
+}

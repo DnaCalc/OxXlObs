@@ -41,6 +41,7 @@ dependencies = [
  "oxxlobs-provenance",
  "oxxlobs-scenario",
  "serde",
+ "serde_json",
  "thiserror",
 ]
 
