@@ -29,3 +29,13 @@ This document assigns stable scenario ids for the first OxXlObs bootstrap workse
 
 ## 6. W005 retained files
 1. `witness_seed_diff` retains `witness-seed.json`.
+
+## 7. W006 retained files
+1. `capture_surface_basic` also retains `workbook.xlsx` under `docs/test-corpus/excel/xlobs_capture_values_formulae_001/`.
+2. `capture_surface_basic` retains live driver outputs under `states/excel/xlobs_capture_values_formulae_001/`:
+   - `capture.json`
+   - `provenance.json`
+   - `bridge.json`
+   - `environment.json`
+   - `driver-run.json`
+   - `bundle.json`

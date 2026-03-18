@@ -1,0 +1,12 @@
+{
+  "scenario_path": "docs/test-corpus/excel/xlobs_capture_values_formulae_001/scenario.json",
+  "output_dir": "states/excel/xlobs_capture_values_formulae_001",
+  "workbook_ref": "docs/test-corpus/excel/xlobs_capture_values_formulae_001/workbook.xlsx",
+  "emitted_files": [
+    "states/excel/xlobs_capture_values_formulae_001/capture.json",
+    "states/excel/xlobs_capture_values_formulae_001/provenance.json",
+    "states/excel/xlobs_capture_values_formulae_001/bridge.json",
+    "states/excel/xlobs_capture_values_formulae_001/environment.json",
+    "states/excel/xlobs_capture_values_formulae_001/bundle.json"
+  ]
+}

@@ -2,7 +2,7 @@
   "scenario_id": "xlobs_capture_values_formulae_001",
   "replay_class": "capture_surface_basic",
   "retained_root": "docs/test-corpus/excel/xlobs_capture_values_formulae_001",
-  "workbook_ref": "fixtures/capture-values-formulae.xlsx",
+  "workbook_ref": "docs/test-corpus/excel/xlobs_capture_values_formulae_001/workbook.xlsx",
   "trigger": "open_then_recalc",
   "observable_surfaces": [
     {

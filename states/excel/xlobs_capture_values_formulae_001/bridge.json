@@ -1,0 +1,9 @@
+{
+  "scenario_id": "xlobs_capture_values_formulae_001",
+  "bridge_kind": "external_process",
+  "bridge_version": "w006-powershell-com.v1",
+  "executable_identity": "pwsh:scripts/invoke-excel-observation.ps1",
+  "command_channel": "json-file",
+  "invocation_mode": "com_automation",
+  "interpretation_limits": []
+}

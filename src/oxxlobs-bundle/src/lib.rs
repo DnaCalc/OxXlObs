@@ -329,6 +329,7 @@ mod tests {
         WitnessLifecycleState, WitnessSeedError, assemble_bundle_seed, validate_bundle_seed,
         validate_handoff, validate_witness_seed,
     };
+    use oxxlobs_bridge::BridgeInvocationMode;
 
     const BUNDLE_FIXTURE: &str =
         include_str!("../../../docs/test-corpus/bundles/xlobs_bundle_seed_handoff_001/bundle.json");
@@ -338,6 +339,8 @@ mod tests {
     const WITNESS_FIXTURE: &str = include_str!(
         "../../../docs/test-corpus/bundles/xlobs_witness_seed_divergence_001/witness-seed.json"
     );
+    const LIVE_DRIVER_BUNDLE_FIXTURE: &str =
+        include_str!("../../../states/excel/xlobs_capture_values_formulae_001/bundle.json");
 
     fn load_bundle_fixture() -> ReplayReadyBundleSeed {
         serde_json::from_str(BUNDLE_FIXTURE).expect("bundle fixture should deserialize")
@@ -349,6 +352,11 @@ mod tests {
 
     fn load_witness_fixture() -> DifferentialWitnessSeed {
         serde_json::from_str(WITNESS_FIXTURE).expect("witness fixture should deserialize")
+    }
+
+    fn load_live_driver_bundle_fixture() -> ReplayReadyBundleSeed {
+        serde_json::from_str(LIVE_DRIVER_BUNDLE_FIXTURE)
+            .expect("live driver bundle fixture should deserialize")
     }
 
     #[test]
@@ -397,6 +405,16 @@ mod tests {
         let witness = load_witness_fixture();
         validate_witness_seed(&witness).expect("expected valid witness fixture");
         assert_eq!(witness.comparison_refs[0].lane_id, "OxCalc");
+    }
+
+    #[test]
+    fn validates_live_driver_bundle_fixture() {
+        let seed = load_live_driver_bundle_fixture();
+        validate_bundle_seed(&seed).expect("expected live driver bundle fixture to validate");
+        assert_eq!(
+            seed.provenance.bridge.invocation_mode,
+            BridgeInvocationMode::ComAutomation
+        );
     }
 
     #[test]

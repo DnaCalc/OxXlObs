@@ -2,7 +2,7 @@
 
 Status: no active blockers.
 
-Last reviewed: 2026-03-18.
+Last reviewed: 2026-03-18 (`W006` closure review, no active blockers).
 
 ---
 

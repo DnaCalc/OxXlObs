@@ -31,3 +31,7 @@ These are local observation capabilities, not Foundation replay capability claim
 | `PACK.replay.appliance` | `W004`, `W005` | `bundle_seed_basic`, `witness_seed_diff` | `docs/test-corpus/bundles/`, `docs/test-runs/` |
 | `PACK.diff.cross_engine.continuous` | `W005`, `W006` | `witness_seed_diff` | `docs/test-corpus/bundles/`, `docs/test-runs/` |
 | `PACK.trace.forensic_plane` | `W002` through `W006` | `capture_surface_basic`, `capture_loss_marked`, `provenance_minimal`, `witness_seed_diff` | `docs/test-corpus/excel/`, `docs/test-runs/`, `states/excel/` |
+
+## 5. W006 retained execution note
+1. `O5.stable_driver_valid` is exercised through `states/excel/xlobs_capture_values_formulae_001/` and `docs/test-runs/W006_STABLE_WINDOWS_EXECUTION_DRIVER.md`.
+2. The current retained live driver evidence directly supports `PACK.trace.forensic_plane` and provides the Excel-side retained run needed before later continuous differential work can widen.

@@ -92,3 +92,8 @@ The retained W005 baseline uses canonical JSON fixtures for differential witness
    - `comparison_capture_loss_note`
    - `explanatory_note`
 2. The retained divergence fixture must preserve enough provenance and lossiness to remain replay/diff/explain-ready without claiming semantic authority.
+
+## 6. W006 live bundle retention
+1. `W006` retains a live replay-ready bundle under `states/excel/xlobs_capture_values_formulae_001/bundle.json`.
+2. The live bundle preserves the stable driver bridge provenance emitted during the retained Excel run rather than reusing the fixture-backed W004 provenance.
+3. Sidecar refs for live driver bundles remain repo-relative and may point into `states/excel/` for retained environment and bridge witnesses.

@@ -7,6 +7,7 @@ This document freezes the current Rust-first implementation baseline without pre
 1. OxXlObs is Rust-first.
 2. The active implementation lives under `src/` as a repo-root Cargo workspace.
 3. A narrow external bridge seam remains allowed for Windows-specific Excel driving where required.
+4. The current W006 bridge seam is a repo-local PowerShell COM driver invoked from the Rust CLI rather than an embedded semantic engine.
 
 ## 3. Initial crate responsibilities
 1. `oxxlobs-abstractions`

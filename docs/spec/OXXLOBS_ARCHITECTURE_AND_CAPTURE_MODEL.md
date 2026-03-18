@@ -77,3 +77,10 @@ The retained W002 baseline uses JSON fixture files inside declared scenario root
 2. Unavailable surfaces must not carry an observed value representation.
 3. Unavailable surfaces must carry a non-`none` capture-loss marker.
 4. These rules establish the W002 baseline for `O0.scenario_valid` and `O1.capture_valid` without claiming Excel-run evidence beyond retained fixture shapes.
+
+## 7. W006 live driver baseline
+1. `W006` introduces the first stable Windows execution path for `capture_surface_basic`.
+2. The declared path is `dna-xl-obs capture-run --scenario <path> --output-dir <repo-relative-dir>`.
+3. The current stable scenario family is `xlobs_capture_values_formulae_001`.
+4. The current bridge opens the declared workbook through Excel COM automation, applies `open_then_recalc`, and retains direct cell-value and formula-text surfaces.
+5. Live driver outputs are retained under `states/excel/<scenario_id>/` and remain observational evidence, not semantic authority.

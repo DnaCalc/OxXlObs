@@ -68,3 +68,14 @@ The retained W003 baseline uses JSON fixture files to pin environment and bridge
 ### 4.4 Capture influence rule
 1. Capture outputs may declare `bridge_influenced: true` when a bridge constrains interpretation.
 2. If `bridge_influenced` is true, at least one interpretation limit must be retained.
+
+## 5. W006 live provenance baseline
+1. `W006` retains live driver provenance under `states/excel/xlobs_capture_values_formulae_001/`.
+2. The current stable bridge envelope is:
+   - `bridge_kind`: `external_process`
+   - `bridge_version`: `w006-powershell-com.v1`
+   - `executable_identity`: `pwsh:scripts/invoke-excel-observation.ps1`
+   - `command_channel`: `json-file`
+   - `invocation_mode`: `com_automation`
+3. Live provenance may retain the raw local Office channel string when the host reports a Click-to-Run URL rather than a normalized channel label.
+4. The retained state snapshot remains a host-bound environment witness and must keep workbook fingerprint, Excel build, macro mode, and bridge provenance explicit.
