@@ -49,7 +49,8 @@ Minimum repo-orientation read order:
 
 ## Bootstrap status
 The repo starts doc-first and Rust-first so the clean-room observation boundary and replay handoff contract are fixed before heavy Excel-driving work lands.
-The bootstrap packet remains `in_progress` while scenario registers, capture surfaces, bridge envelopes, and replay handoff artifacts move from planning into exercised evidence.
+The bootstrap packet is now `complete` through `W006`, with the first retained live Excel-driven capture family exercised under `states/excel/`.
+The next lane widens from local bootstrap into cross-repo replay and differential consumption.
 
 ## Implementation Direction
 1. OxXlObs is Rust-first for scenario planning, provenance handling, bundle assembly, CLI surfaces, and most harness logic.

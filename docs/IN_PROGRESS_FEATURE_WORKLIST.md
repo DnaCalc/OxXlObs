@@ -3,8 +3,9 @@
 ## Active bootstrap worksets
 
 1. `W001_REPO_BOOTSTRAP_AND_BOUNDARY`
-   - status: in_progress
+   - status: complete
    - objective: lock repo skeleton, observation boundary, and first package map.
+   - current baseline: doctrine surfaces, spec index, local execution doctrine, canonical retained roots, and first Rust workspace model are explicit.
 2. `W002_SCENARIO_AND_CAPTURE_CONTRACT_BASELINE`
    - status: complete
    - objective: stand up scenario declarations, observable surfaces, and lossiness markers.
@@ -25,12 +26,16 @@
    - status: complete
    - objective: stand up the first stable Windows execution path for repeatable observation runs.
    - current baseline: `dna-xl-obs capture-run` drives Excel through the retained PowerShell COM bridge and emits replay-ready retained evidence under `states/excel/xlobs_capture_values_formulae_001/`.
+7. `W007_FIRST_CROSS_REPO_REPLAY_AND_DIFF_CONSUMPTION`
+   - status: planned
+   - objective: stand up the first cross-repo consumption pass through `OxReplay` and `OxCalc` over retained live Excel evidence.
 
 ## Activation note
 1. The Rust-first stack is declared for the repo.
 2. OxXlObs is centered on observation-to-replay compilation from the first workset.
 3. `W006` remains sequenced after `W005`; activation still depends on explicit scope, named capability/pack impact, and declared dependencies.
 4. `W006` now retains the first live Excel-driven capture family and associated replay-ready bundle evidence.
+5. `W007` is the first post-bootstrap lane and is not active until sibling-repo availability and explicit scope confirmation are in place.
 
 ## Reserved follow-on lane entry
 1. `OxReplay` is the first consumer expected to validate bundle quality and replay readiness.
