@@ -51,6 +51,7 @@ Minimum repo-orientation read order:
 The repo starts doc-first and Rust-first so the clean-room observation boundary and replay handoff contract are fixed before heavy Excel-driving work lands.
 The bootstrap packet is now `complete` through `W006`, with the first retained live Excel-driven capture family exercised under `states/excel/`.
 The next lane widens from local bootstrap into cross-repo replay and differential consumption.
+The current `W007` direction is to emit an `OxReplay`-canonical replay manifest over the richer `OxXlObs` observation bundle rather than collapsing the observation contract into a thin shared-runtime shape.
 
 ## Implementation Direction
 1. OxXlObs is Rust-first for scenario planning, provenance handling, bundle assembly, CLI surfaces, and most harness logic.

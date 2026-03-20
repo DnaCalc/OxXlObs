@@ -1,0 +1,17 @@
+{
+  "scenario_id": "xlobs_capture_values_formulae_001",
+  "lane_id": "oxxlobs",
+  "events": [
+    {
+      "event_id": "sheet1_a1_value",
+      "source_label": "cell_value:Sheet1!A1:direct",
+      "normalized_family": "excel.surface.cell_value.direct:Sheet1!A1=42"
+    },
+    {
+      "event_id": "sheet1_a1_formula",
+      "source_label": "formula_text:Sheet1!A1:direct",
+      "normalized_family": "excel.surface.formula_text.direct:Sheet1!A1==SUM(B1:B3)"
+    }
+  ],
+  "registry_refs": []
+}

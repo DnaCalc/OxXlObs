@@ -287,6 +287,47 @@ function New-ObservedSurfaceRecord {
     }
 }
 
+function Get-OxReplayCaptureLossStatus {
+    param(
+        [string[]]$CaptureLossSummary
+    )
+
+    if ($null -eq $CaptureLossSummary -or $CaptureLossSummary.Count -eq 0) {
+        return "none"
+    }
+
+    return "downgraded_instrumentation"
+}
+
+function Convert-ToReplayNormalizedFamily {
+    param(
+        [Parameter(Mandatory = $true)]
+        $ObservedSurface
+    )
+
+    $surface = $ObservedSurface.surface
+    $prefix = "excel.surface.{0}" -f [string]$surface.surface_kind
+    switch ([string]$ObservedSurface.status) {
+        "direct" {
+            if ($null -ne $ObservedSurface.value_repr) {
+                return "{0}.direct:{1}={2}" -f $prefix, [string]$surface.locator, [string]$ObservedSurface.value_repr
+            }
+
+            return "{0}.direct:{1}" -f $prefix, [string]$surface.locator
+        }
+        "derived" {
+            if ($null -ne $ObservedSurface.value_repr) {
+                return "{0}.derived:{1}={2}" -f $prefix, [string]$surface.locator, [string]$ObservedSurface.value_repr
+            }
+
+            return "{0}.derived:{1}" -f $prefix, [string]$surface.locator
+        }
+        default {
+            return "{0}.unavailable:{1}:{2}" -f $prefix, [string]$surface.locator, [string]$ObservedSurface.capture_loss
+        }
+    }
+}
+
 $repoRoot = Resolve-FullPath -BasePath $PSScriptRoot -CandidatePath ".."
 $resolvedScenarioPath = Resolve-FullPath -BasePath $repoRoot -CandidatePath $ScenarioPath
 $resolvedOutputDir = Resolve-FullPath -BasePath $repoRoot -CandidatePath $OutputDir
@@ -453,6 +494,62 @@ try {
         }
     }
 
+    $normalizedReplay = [ordered]@{
+        scenario_id = [string]$scenario.scenario_id
+        lane_id = "oxxlobs"
+        events = @(
+            $observedSurfaces | ForEach-Object {
+                [ordered]@{
+                    event_id = [string]$_.surface.surface_id
+                    source_label = "{0}:{1}:{2}" -f [string]$_.surface.surface_kind, [string]$_.surface.locator, [string]$_.status
+                    normalized_family = Convert-ToReplayNormalizedFamily -ObservedSurface $_
+                }
+            }
+        )
+        registry_refs = @()
+    }
+
+    $oxReplayManifest = [ordered]@{
+        bundle_id = "oxxlobs-{0}" -f [string]$scenario.scenario_id
+        scenario_id = [string]$scenario.scenario_id
+        bundle_schema = "replay.bundle.v1"
+        source_schema = "oxxlobs.replay_bundle_seed.v1"
+        lane_id = "oxxlobs"
+        adapter_id = "oxxlobs.observation.replay.v1"
+        capture_mode = "excel_black_box_observation"
+        registry_refs = @()
+        projection_status = "lossy"
+        capture_loss = Get-OxReplayCaptureLossStatus -CaptureLossSummary $captureLossSummary
+        sidecars = @(
+            [ordered]@{
+                artifact_family = "oxxlobs_observation_bundle_seed"
+                path = "bundle.json"
+            },
+            [ordered]@{
+                artifact_family = "observation_capture"
+                path = "capture.json"
+            },
+            [ordered]@{
+                artifact_family = "observation_provenance"
+                path = "provenance.json"
+            },
+            [ordered]@{
+                artifact_family = "environment_fingerprint"
+                path = "environment.json"
+            },
+            [ordered]@{
+                artifact_family = "bridge_envelope"
+                path = "bridge.json"
+            }
+        )
+        views = @(
+            [ordered]@{
+                artifact_family = "normalized_replay"
+                path = "views/normalized-replay.json"
+            }
+        )
+    }
+
     Write-JsonFile -Path (Join-Path $resolvedOutputDir "capture.json") -Value $capture
     Write-JsonFile -Path (Join-Path $resolvedOutputDir "provenance.json") -Value $provenance
     Write-JsonFile -Path (Join-Path $resolvedOutputDir "bridge.json") -Value $bridge
@@ -460,6 +557,8 @@ try {
 
     if ($EmitBundle -and $null -ne $bundle) {
         Write-JsonFile -Path (Join-Path $resolvedOutputDir "bundle.json") -Value $bundle
+        Write-JsonFile -Path (Join-Path $resolvedOutputDir "oxreplay-manifest.json") -Value $oxReplayManifest
+        Write-JsonFile -Path (Join-Path $resolvedOutputDir "views/normalized-replay.json") -Value $normalizedReplay
     }
 
     $emittedFiles = @(
@@ -470,6 +569,8 @@ try {
     )
     if ($EmitBundle) {
         $emittedFiles += ("{0}/bundle.json" -f $outputRepoPath)
+        $emittedFiles += ("{0}/oxreplay-manifest.json" -f $outputRepoPath)
+        $emittedFiles += ("{0}/views/normalized-replay.json" -f $outputRepoPath)
     }
 
     $driverRun = [ordered]@{

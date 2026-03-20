@@ -38,8 +38,9 @@ Stand up the first cross-repo consumption pass for retained Excel evidence throu
 
 ## Scenario Readiness
 1. initial scenario family: `capture_surface_basic`
-2. initial retained source: `states/excel/xlobs_capture_values_formulae_001/bundle.json`
-3. initial replay classes touched: `capture_surface_basic`, `bundle_seed_basic`, `witness_seed_diff`
+2. initial retained source observation bundle: `states/excel/xlobs_capture_values_formulae_001/bundle.json`
+3. initial canonical replay-facing manifest: `states/excel/xlobs_capture_values_formulae_001/oxreplay-manifest.json`
+4. initial replay classes touched: `capture_surface_basic`, `bundle_seed_basic`, `witness_seed_diff`
 
 ## Pack-Evidence Traceability
 1. `PACK.replay.appliance`

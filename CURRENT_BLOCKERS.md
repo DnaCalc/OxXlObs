@@ -2,7 +2,7 @@
 
 Status: no active blockers.
 
-Last reviewed: 2026-03-19 (`W001` reconciliation and `W007` planning review, no active blockers).
+Last reviewed: 2026-03-20 (`W007` OxReplay seam activation review, no active blockers).
 
 ---
 

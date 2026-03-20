@@ -33,3 +33,8 @@ It exists to provide reusable mechanics for:
 2. OxXlObs owns Excel observation mechanics and replay-ready evidence compilation.
 3. `OxReplay` owns shared replay runtime and evidence analysis.
 4. Lane repos own DNA Calc semantics and adapter meaning.
+
+## 6. Live Excel re-execution rule
+1. `OxXlObs` is the primary Excel-driving subsystem for the program.
+2. If a replay workflow later needs live Excel re-execution, `OxReplay` may coordinate or request it, but the actual Excel-driving path should remain in `OxXlObs`.
+3. Artifact replay inside `OxReplay` and live Excel re-execution through `OxXlObs` are related but distinct operations and must not be collapsed into one ownership surface.

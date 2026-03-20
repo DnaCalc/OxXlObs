@@ -97,3 +97,12 @@ The retained W005 baseline uses canonical JSON fixtures for differential witness
 1. `W006` retains a live replay-ready bundle under `states/excel/xlobs_capture_values_formulae_001/bundle.json`.
 2. The live bundle preserves the stable driver bridge provenance emitted during the retained Excel run rather than reusing the fixture-backed W004 provenance.
 3. Sidecar refs for live driver bundles remain repo-relative and may point into `states/excel/` for retained environment and bridge witnesses.
+
+## 7. W007 canonical replay-manifest alignment
+1. `W007` begins aligning `OxXlObs` emission with the `OxReplay` canonical bundle manifest shape.
+2. The current alignment model is dual-artifact:
+   - the rich `OxXlObs` observation bundle remains the source observation contract,
+   - an `OxReplay`-canonical `replay.bundle.v1` manifest is emitted over that source bundle for shared-runtime intake.
+3. The first retained canonical manifest is `states/excel/xlobs_capture_values_formulae_001/oxreplay-manifest.json`.
+4. The first retained normalized replay view is `states/excel/xlobs_capture_values_formulae_001/views/normalized-replay.json`.
+5. If the replay-facing view is only a partial or lossy projection, the canonical manifest must state that explicitly and the richer observation sidecars must remain retained.

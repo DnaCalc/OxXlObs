@@ -39,3 +39,10 @@ This document assigns stable scenario ids for the first OxXlObs bootstrap workse
    - `environment.json`
    - `driver-run.json`
    - `bundle.json`
+
+## 8. W007 retained files
+1. `capture_surface_basic` now also retains the first `OxReplay`-facing canonical intake artifacts under `states/excel/xlobs_capture_values_formulae_001/`:
+   - `oxreplay-manifest.json`
+   - `views/normalized-replay.json`
+   - `oxreplay-validate-bundle-report.json`
+   - `oxreplay-replay-report.json`

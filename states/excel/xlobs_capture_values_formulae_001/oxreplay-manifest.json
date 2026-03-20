@@ -1,0 +1,40 @@
+{
+  "bundle_id": "oxxlobs-xlobs_capture_values_formulae_001",
+  "scenario_id": "xlobs_capture_values_formulae_001",
+  "bundle_schema": "replay.bundle.v1",
+  "source_schema": "oxxlobs.replay_bundle_seed.v1",
+  "lane_id": "oxxlobs",
+  "adapter_id": "oxxlobs.observation.replay.v1",
+  "capture_mode": "excel_black_box_observation",
+  "registry_refs": [],
+  "projection_status": "lossy",
+  "capture_loss": "none",
+  "sidecars": [
+    {
+      "artifact_family": "oxxlobs_observation_bundle_seed",
+      "path": "bundle.json"
+    },
+    {
+      "artifact_family": "observation_capture",
+      "path": "capture.json"
+    },
+    {
+      "artifact_family": "observation_provenance",
+      "path": "provenance.json"
+    },
+    {
+      "artifact_family": "environment_fingerprint",
+      "path": "environment.json"
+    },
+    {
+      "artifact_family": "bridge_envelope",
+      "path": "bridge.json"
+    }
+  ],
+  "views": [
+    {
+      "artifact_family": "normalized_replay",
+      "path": "views/normalized-replay.json"
+    }
+  ]
+}

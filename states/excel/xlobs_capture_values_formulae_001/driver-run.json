@@ -7,6 +7,8 @@
     "states/excel/xlobs_capture_values_formulae_001/provenance.json",
     "states/excel/xlobs_capture_values_formulae_001/bridge.json",
     "states/excel/xlobs_capture_values_formulae_001/environment.json",
-    "states/excel/xlobs_capture_values_formulae_001/bundle.json"
+    "states/excel/xlobs_capture_values_formulae_001/bundle.json",
+    "states/excel/xlobs_capture_values_formulae_001/oxreplay-manifest.json",
+    "states/excel/xlobs_capture_values_formulae_001/views/normalized-replay.json"
   ]
 }
