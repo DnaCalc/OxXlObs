@@ -1,0 +1,120 @@
+{
+  "bundle_schema": "oxxlplay.replay_bundle_seed.v1",
+  "scenario": {
+    "scenario_id": "xlplay_capture_values_formulae_001",
+    "replay_class": "capture_surface_basic",
+    "retained_root": "docs/test-corpus/excel/xlplay_capture_values_formulae_001",
+    "workbook_ref": "docs/test-corpus/excel/xlplay_capture_values_formulae_001/workbook.xlsx",
+    "trigger": "open_then_recalc",
+    "observable_surfaces": [
+      {
+        "surface_id": "sheet1_a1_value",
+        "surface_kind": "cell_value",
+        "locator": "Sheet1!A1",
+        "required": true
+      },
+      {
+        "surface_id": "sheet1_a1_formula",
+        "surface_kind": "formula_text",
+        "locator": "Sheet1!A1",
+        "required": false
+      }
+    ]
+  },
+  "provenance": {
+    "scenario_id": "xlplay_capture_values_formulae_001",
+    "run_id": "run_xlplay_capture_values_formulae_001_20260320_213049",
+    "workbook_ref": "docs/test-corpus/excel/xlplay_capture_values_formulae_001/workbook.xlsx",
+    "workbook_fingerprint": "sha256:e02df32eba6f09aee179247d7eaa94fed94cb7ff2b1016076621a3067b9a473d",
+    "excel_version": "16.0",
+    "excel_build": "19725",
+    "excel_channel": "http://officecdn.microsoft.com/pr/492350f6-3a01-4f97-b9c0-c7c6ddf67d60",
+    "host_os": "Microsoft Windows 11 Pro",
+    "host_architecture": "x64",
+    "macro_mode": "force_disable_requested",
+    "automation_policy": "clean_room_declared",
+    "captured_at_utc": "2026-03-20T19:30:49Z",
+    "timezone": "South Africa Standard Time",
+    "declared_surface_ids": [
+      "sheet1_a1_value",
+      "sheet1_a1_formula"
+    ],
+    "capture_loss_summary": [],
+    "uncertainty_summary": [],
+    "bridge": {
+      "scenario_id": "xlplay_capture_values_formulae_001",
+      "bridge_kind": "external_process",
+      "bridge_version": "w006-powershell-com.v1",
+      "executable_identity": "pwsh:scripts/invoke-excel-observation.ps1",
+      "command_channel": "json-file",
+      "invocation_mode": "com_automation",
+      "interpretation_limits": []
+    }
+  },
+  "capture": {
+    "surfaces": [
+      {
+        "surface": {
+          "surface_id": "sheet1_a1_value",
+          "surface_kind": "cell_value",
+          "locator": "Sheet1!A1",
+          "required": true
+        },
+        "status": "direct",
+        "value_repr": "42",
+        "capture_loss": "none",
+        "uncertainty": "none"
+      },
+      {
+        "surface": {
+          "surface_id": "sheet1_a1_formula",
+          "surface_kind": "formula_text",
+          "locator": "Sheet1!A1",
+          "required": false
+        },
+        "status": "direct",
+        "value_repr": "=SUM(B1:B3)",
+        "capture_loss": "none",
+        "uncertainty": "none"
+      }
+    ],
+    "interpretation": {
+      "bridge_influenced": false,
+      "interpretation_limits": []
+    }
+  },
+  "sidecars": [
+    {
+      "kind": "environment_fingerprint",
+      "path": "states/excel/xlplay_capture_values_formulae_001/environment.json",
+      "media_type": "application/json"
+    },
+    {
+      "kind": "bridge_envelope",
+      "path": "states/excel/xlplay_capture_values_formulae_001/bridge.json",
+      "media_type": "application/json"
+    },
+    {
+      "kind": "captured_workbook",
+      "path": "docs/test-corpus/excel/xlplay_capture_values_formulae_001/workbook.xlsx",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    }
+  ],
+  "handoff": {
+    "intended_replay_consumers": [
+      "OxReplay"
+    ],
+    "intended_diff_consumers": [
+      "OxCalc"
+    ],
+    "capability_hints": [
+      "O3.bundle_seed_valid",
+      "O5.stable_driver_valid"
+    ],
+    "pack_hints": [
+      "PACK.replay.appliance",
+      "PACK.diff.cross_engine.continuous",
+      "PACK.trace.forensic_plane"
+    ]
+  }
+}

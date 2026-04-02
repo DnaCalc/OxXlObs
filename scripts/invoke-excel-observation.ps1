@@ -2,7 +2,7 @@
 param(
     [Parameter(Mandatory = $true)]
     [string]$ScenarioPath,
-    [string]$OutputDir = ".tmp/oxxlobs-w006",
+    [string]$OutputDir = ".tmp/oxxlplay-w006",
     [switch]$EmitBundle = $true
 )
 
@@ -144,7 +144,7 @@ function Ensure-BootstrapWorkbook {
         return
     }
 
-    if ($Scenario.scenario_id -ne "xlobs_capture_values_formulae_001") {
+    if ($Scenario.scenario_id -ne "xlplay_capture_values_formulae_001") {
         throw "Workbook `$WorkbookPath` is missing and no bootstrap recipe exists for scenario `$($Scenario.scenario_id)`."
     }
 
@@ -460,7 +460,7 @@ try {
     $bundle = $null
     if ($EmitBundle) {
         $bundle = [ordered]@{
-            bundle_schema = "oxxlobs.replay_bundle_seed.v1"
+            bundle_schema = "oxxlplay.replay_bundle_seed.v1"
             scenario = $scenario
             provenance = $provenance
             capture = $capture
@@ -496,7 +496,7 @@ try {
 
     $normalizedReplay = [ordered]@{
         scenario_id = [string]$scenario.scenario_id
-        lane_id = "oxxlobs"
+        lane_id = "oxxlplay"
         events = @(
             $observedSurfaces | ForEach-Object {
                 [ordered]@{
@@ -510,19 +510,19 @@ try {
     }
 
     $oxReplayManifest = [ordered]@{
-        bundle_id = "oxxlobs-{0}" -f [string]$scenario.scenario_id
+        bundle_id = "oxxlplay-{0}" -f [string]$scenario.scenario_id
         scenario_id = [string]$scenario.scenario_id
         bundle_schema = "replay.bundle.v1"
-        source_schema = "oxxlobs.replay_bundle_seed.v1"
-        lane_id = "oxxlobs"
-        adapter_id = "oxxlobs.observation.replay.v1"
+        source_schema = "oxxlplay.replay_bundle_seed.v1"
+        lane_id = "oxxlplay"
+        adapter_id = "oxxlplay.observation.replay.v1"
         capture_mode = "excel_black_box_observation"
         registry_refs = @()
         projection_status = "lossy"
         capture_loss = Get-OxReplayCaptureLossStatus -CaptureLossSummary $captureLossSummary
         sidecars = @(
             [ordered]@{
-                artifact_family = "oxxlobs_observation_bundle_seed"
+                artifact_family = "oxxlplay_observation_bundle_seed"
                 path = "bundle.json"
             },
             [ordered]@{

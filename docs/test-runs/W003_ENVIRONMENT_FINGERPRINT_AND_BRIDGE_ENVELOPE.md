@@ -8,8 +8,8 @@
 1. `pwsh ./scripts/meta-check.ps1`
 
 ## Retained fixture roots exercised
-1. `docs/test-corpus/excel/xlobs_provenance_excel_build_001/`
-2. `states/excel/xlobs_provenance_excel_build_001/`
+1. `docs/test-corpus/excel/xlplay_provenance_excel_build_001/`
+2. `states/excel/xlplay_provenance_excel_build_001/`
 
 ## Validation coverage
 1. Bridge envelope validation requires explicit bridge kind, bridge version, command channel, and executable identity for non-`pure_rust` bridges.

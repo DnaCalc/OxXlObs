@@ -1,7 +1,7 @@
-# CHARTER.md — OxXlObs Charter
+# CHARTER.md — OxXlPlay Charter
 
 ## 1. Mission
-OxXlObs defines, implements, and proves the Excel observation harness for DNA Calc.
+OxXlPlay defines, implements, and proves the Excel observation harness for DNA Calc.
 
 It owns the reusable observation substrate for scenario planning, Excel-run fingerprinting, observable-surface capture, lossiness reporting, replay-ready bundle emission, and differential witness seeding while preserving Foundation and lane ownership of semantics and replay governance.
 
@@ -30,13 +30,13 @@ Out of scope:
 4. Generic Office automation unrelated to observation-to-replay evidence flow.
 
 ## 4. Ownership boundary rule
-1. OxXlObs may observe and record Excel behavior through declared clean-room harnesses.
-2. OxXlObs may normalize and package observations for replay use.
-3. OxXlObs may not redefine Excel semantics or assert semantic truth beyond retained observation evidence.
+1. OxXlPlay may observe and record Excel behavior through declared clean-room harnesses.
+2. OxXlPlay may normalize and package observations for replay use.
+3. OxXlPlay may not redefine Excel semantics or assert semantic truth beyond retained observation evidence.
 4. Foundation owns doctrine; `OxReplay` owns shared replay runtime; lane repos own DNA Calc semantics.
 
 ## 5. Observation-to-replay rule
-1. The primary output of OxXlObs is not raw logs or pass/fail status.
+1. The primary output of OxXlPlay is not raw logs or pass/fail status.
 2. The primary output is a replay-ready evidence bundle with explicit provenance and capture-loss metadata.
 3. Every retained divergence should be shaped so it can later be replayed, diffed, explained, and, where suitable, distilled.
 
@@ -57,4 +57,4 @@ An observation-harness change is done only when:
 2. relevant Foundation doctrine links still hold,
 3. capability and pack impact are stated,
 4. affected replay-handoff evidence is updated,
-5. the change does not widen OxXlObs into semantic ownership or replay-governance ownership.
+5. the change does not widen OxXlPlay into semantic ownership or replay-governance ownership.

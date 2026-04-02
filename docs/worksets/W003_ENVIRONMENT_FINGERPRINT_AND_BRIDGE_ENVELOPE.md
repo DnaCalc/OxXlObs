@@ -31,7 +31,7 @@ Pin Excel build, host environment, and bridge metadata for retained runs.
 
 ## Scenario Readiness
 1. replay classes: `provenance_minimal`
-2. scenario id: `xlobs_provenance_excel_build_001`
+2. scenario id: `xlplay_provenance_excel_build_001`
 
 ## Pack-Evidence Traceability
 1. `PACK.trace.forensic_plane`

@@ -1,4 +1,4 @@
-# IN_PROGRESS_FEATURE_WORKLIST.md — OxXlObs
+# IN_PROGRESS_FEATURE_WORKLIST.md — OxXlPlay
 
 ## Active bootstrap worksets
 
@@ -25,22 +25,27 @@
 6. `W006_STABLE_WINDOWS_EXECUTION_DRIVER`
    - status: complete
    - objective: stand up the first stable Windows execution path for repeatable observation runs.
-   - current baseline: `dna-xl-obs capture-run` drives Excel through the retained PowerShell COM bridge and emits replay-ready retained evidence under `states/excel/xlobs_capture_values_formulae_001/`.
+   - current baseline: `dna-xl-play capture-run` drives Excel through the retained PowerShell COM bridge and emits replay-ready retained evidence under `states/excel/xlplay_capture_values_formulae_001/`.
 7. `W007_FIRST_CROSS_REPO_REPLAY_AND_DIFF_CONSUMPTION`
    - status: in_progress
    - objective: stand up the first cross-repo consumption pass through `OxReplay` and `OxCalc` over retained live Excel evidence.
-   - current baseline: `OxReplay` now validates an `OxXlObs`-emitted canonical replay manifest and replay-loads the first normalized replay view from `states/excel/xlobs_capture_values_formulae_001/`; the `OxCalc` comparison leg remains open.
+   - current baseline: `OxReplay` now validates an `OxXlPlay`-emitted canonical replay manifest and replay-loads the first normalized replay view from `states/excel/xlplay_capture_values_formulae_001/`; the `OxCalc` comparison leg remains open.
 
 ## Activation note
 1. The Rust-first stack is declared for the repo.
-2. OxXlObs is centered on observation-to-replay compilation from the first workset.
+2. OxXlPlay is centered on observation-to-replay compilation from the first workset.
 3. `W006` remains sequenced after `W005`; activation still depends on explicit scope, named capability/pack impact, and declared dependencies.
 4. `W006` now retains the first live Excel-driven capture family and associated replay-ready bundle evidence.
 5. `W007` is now active over the first `OxReplay` ingestion pass and remains open until the `OxCalc` comparison leg and seam clarifications are retained.
 
+## Downstream consumer contract status
+1. `DNA OneCalc` observation-consumer contract is now explicit at `docs/spec/OXXLPLAY_ONECALC_OBSERVATION_CONSUMER_CONTRACT.md`.
+2. The contract defines the first comparison-ready observation family, comparison envelope, surface classification, lossy-view labeling, and platform scope.
+3. Open consumer-side gaps: the `OxCalc` comparison leg of `W007` remains open, the comparison envelope is narrow (cell value and formula text only), no formatting or display-state observation exists, and the richer `OxXlPlay` diff or equality envelope is provisional scope.
+
 ## Reserved follow-on lane entry
 1. `OxReplay` is the first consumer expected to validate bundle quality and replay readiness.
-2. `OxCalc` is the first DNA lane expected to use OxXlObs evidence for broad differential growth.
+2. `OxCalc` is the first DNA lane expected to use OxXlPlay evidence for broad differential growth.
 3. `OxFml` and `OxVba` should join through narrower initial scenario families.
 
 ## Activation rule

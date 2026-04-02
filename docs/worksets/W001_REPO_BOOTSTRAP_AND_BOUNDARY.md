@@ -30,7 +30,7 @@ Lock repo skeleton, doctrine surfaces, observation boundary, and first package m
 1. canonical roots: `docs/test-corpus/`, `docs/test-runs/`, `states/excel/`.
 
 ## Scenario Readiness
-1. scenario ids introduced in `docs/spec/OXXLOBS_SCENARIO_REGISTER.md`.
+1. scenario ids introduced in `docs/spec/OXXLPLAY_SCENARIO_REGISTER.md`.
 
 ## Pack-Evidence Traceability
 1. planning only; no retained pack-grade evidence yet.

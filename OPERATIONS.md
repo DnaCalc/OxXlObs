@@ -1,4 +1,4 @@
-# OPERATIONS.md — OxXlObs Operations
+# OPERATIONS.md — OxXlPlay Operations
 
 ## 1. Purpose
 Define day-to-day execution rules for the Excel observation harness and its replay-ready evidence outputs.
@@ -8,7 +8,7 @@ Define day-to-day execution rules for the Excel observation harness and its repl
 2. Every retained run should move toward replay-ready evidence rather than one-off diagnostics.
 3. Excel automation is subordinate to evidence quality; fast capture that cannot be trusted is a failure.
 4. Clean-room admissibility rules are first-class runtime concerns, not later documentation chores.
-5. Shared replay governance remains outside this repo; OxXlObs feeds the replay plane but does not own it.
+5. Shared replay governance remains outside this repo; OxXlPlay feeds the replay plane but does not own it.
 
 ## 3. Working Strata
 Initial implementation strata are:
@@ -34,7 +34,7 @@ When observation changes affect replay bundle contracts, lane comparison expecta
 5. file handoff packets to `OxReplay` or affected lane repos when evidence-shape obligations change.
 
 ## 6. Promotion Gate
-No OxXlObs promotion without:
+No OxXlPlay promotion without:
 1. updated spec text for affected strata,
 2. declared replay-handoff, capability, and pack impact,
 3. explicit clean-room admissibility check,
@@ -125,17 +125,17 @@ The repo exists to emit replay-ready evidence bundles, not to accumulate unstruc
 ## 12. Upstream Observation Ledger Protocol
 
 ### 12.1 Purpose
-Repos that consume Excel-backed evidence discover constraints on observation shape, bundle quality, and capture coverage through their own work. Those observations must flow back to OxXlObs through a structured channel.
+Repos that consume Excel-backed evidence discover constraints on observation shape, bundle quality, and capture coverage through their own work. Those observations must flow back to OxXlPlay through a structured channel.
 
 ### 12.2 Inbound Observation Sources
-OxXlObs must check for inbound observation ledgers from sibling repos at the start of any adapter, replay-handoff, or differential workset. Known source locations are:
+OxXlPlay must check for inbound observation ledgers from sibling repos at the start of any adapter, replay-handoff, or differential workset. Known source locations are:
 
 | Source repo | Ledger location | Relationship |
 |-------------|----------------|--------------|
-| OxReplay | `../OxReplay/docs/upstream/NOTES_FOR_OXXLOBS.md` | replay bundle and witness-seed expectations |
-| OxCalc | `../OxCalc/docs/upstream/NOTES_FOR_OXXLOBS.md` | core-engine differential expectations |
-| OxFml | `../OxFml/docs/upstream/NOTES_FOR_OXXLOBS.md` | formula/evaluator seam expectations |
-| OxVba | `../OxVba/docs/upstream/NOTES_FOR_OXXLOBS.md` | Excel/VBA host-observation expectations |
+| OxReplay | `../OxReplay/docs/upstream/NOTES_FOR_OXXLPLAY.md` | replay bundle and witness-seed expectations |
+| OxCalc | `../OxCalc/docs/upstream/NOTES_FOR_OXXLPLAY.md` | core-engine differential expectations |
+| OxFml | `../OxFml/docs/upstream/NOTES_FOR_OXXLPLAY.md` | formula/evaluator seam expectations |
+| OxVba | `../OxVba/docs/upstream/NOTES_FOR_OXXLPLAY.md` | Excel/VBA host-observation expectations |
 
 ## 13. Emitted Artifact Protocol
 1. Declare a canonical artifact root before implementation begins.
@@ -155,4 +155,4 @@ Any workset that acts as an execution packet must include:
 4. pack-evidence traceability.
 
 ## 15. Local Doctrine Reference
-OxXlObs-local execution lessons live at `docs/LOCAL_EXECUTION_DOCTRINE.md`.
+OxXlPlay-local execution lessons live at `docs/LOCAL_EXECUTION_DOCTRINE.md`.

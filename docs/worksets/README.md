@@ -1,6 +1,6 @@
-# OxXlObs Worksets
+# OxXlPlay Worksets
 
-Worksets are the execution units for OxXlObs.
+Worksets are the execution units for OxXlPlay.
 
 ## Sequence
 1. `W001_REPO_BOOTSTRAP_AND_BOUNDARY.md`
@@ -12,4 +12,4 @@ Worksets are the execution units for OxXlObs.
 7. `W007_FIRST_CROSS_REPO_REPLAY_AND_DIFF_CONSUMPTION.md`
 
 ## Workset rule
-Workset files in this directory are the execution packets for OxXlObs.
+Workset files in this directory are the execution packets for OxXlPlay.

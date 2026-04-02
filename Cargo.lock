@@ -15,69 +15,69 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f8ca58f447f06ed17d5fc4043ce1b10dd205e060fb3ce5b979b8ed8e59ff3f79"
 
 [[package]]
-name = "oxxlobs-abstractions"
+name = "oxxlplay-abstractions"
 version = "0.1.0"
 dependencies = [
  "serde",
 ]
 
 [[package]]
-name = "oxxlobs-bridge"
+name = "oxxlplay-bridge"
 version = "0.1.0"
 dependencies = [
- "oxxlobs-abstractions",
- "serde",
- "serde_json",
- "thiserror",
-]
-
-[[package]]
-name = "oxxlobs-bundle"
-version = "0.1.0"
-dependencies = [
- "oxxlobs-abstractions",
- "oxxlobs-bridge",
- "oxxlobs-capture",
- "oxxlobs-provenance",
- "oxxlobs-scenario",
+ "oxxlplay-abstractions",
  "serde",
  "serde_json",
  "thiserror",
 ]
 
 [[package]]
-name = "oxxlobs-capture"
+name = "oxxlplay-bundle"
 version = "0.1.0"
 dependencies = [
- "oxxlobs-abstractions",
+ "oxxlplay-abstractions",
+ "oxxlplay-bridge",
+ "oxxlplay-capture",
+ "oxxlplay-provenance",
+ "oxxlplay-scenario",
  "serde",
  "serde_json",
  "thiserror",
 ]
 
 [[package]]
-name = "oxxlobs-cli"
+name = "oxxlplay-capture"
 version = "0.1.0"
 dependencies = [
- "serde_json",
-]
-
-[[package]]
-name = "oxxlobs-provenance"
-version = "0.1.0"
-dependencies = [
- "oxxlobs-abstractions",
- "oxxlobs-bridge",
+ "oxxlplay-abstractions",
  "serde",
  "serde_json",
  "thiserror",
 ]
 
 [[package]]
-name = "oxxlobs-scenario"
+name = "oxxlplay-cli"
 version = "0.1.0"
 dependencies = [
- "oxxlobs-abstractions",
+ "serde_json",
+]
+
+[[package]]
+name = "oxxlplay-provenance"
+version = "0.1.0"
+dependencies = [
+ "oxxlplay-abstractions",
+ "oxxlplay-bridge",
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
+name = "oxxlplay-scenario"
+version = "0.1.0"
+dependencies = [
+ "oxxlplay-abstractions",
  "serde",
  "serde_json",
  "thiserror",

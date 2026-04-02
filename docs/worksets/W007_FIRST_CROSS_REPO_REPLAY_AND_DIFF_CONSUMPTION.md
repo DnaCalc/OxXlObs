@@ -18,7 +18,7 @@ Stand up the first cross-repo consumption pass for retained Excel evidence throu
 ## Exit Gate
 1. a retained live Excel bundle from `states/excel/` has been consumed by `OxReplay`,
 2. the same scenario family has a first retained comparison artifact or explicit comparison handoff path for `OxCalc`,
-3. any newly discovered replay or diff-shape constraints are recorded back into OxXlObs through inbound ledgers or a retained local handoff note.
+3. any newly discovered replay or diff-shape constraints are recorded back into OxXlPlay through inbound ledgers or a retained local handoff note.
 
 ## Expected capability impact
 1. establishes the first post-bootstrap cross-repo consumption baseline over `O3.bundle_seed_valid`, `O4.diff_seed_valid`, and `O5.stable_driver_valid`.
@@ -38,8 +38,8 @@ Stand up the first cross-repo consumption pass for retained Excel evidence throu
 
 ## Scenario Readiness
 1. initial scenario family: `capture_surface_basic`
-2. initial retained source observation bundle: `states/excel/xlobs_capture_values_formulae_001/bundle.json`
-3. initial canonical replay-facing manifest: `states/excel/xlobs_capture_values_formulae_001/oxreplay-manifest.json`
+2. initial retained source observation bundle: `states/excel/xlplay_capture_values_formulae_001/bundle.json`
+3. initial canonical replay-facing manifest: `states/excel/xlplay_capture_values_formulae_001/oxreplay-manifest.json`
 4. initial replay classes touched: `capture_surface_basic`, `bundle_seed_basic`, `witness_seed_diff`
 
 ## Pack-Evidence Traceability

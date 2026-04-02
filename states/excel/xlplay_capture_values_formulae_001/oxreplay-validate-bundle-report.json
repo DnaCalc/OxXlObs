@@ -1,0 +1,35 @@
+{
+  "status": "valid",
+  "manifest_path": "../OxXlPlay/states/excel/xlplay_capture_values_formulae_001/oxreplay-manifest.json",
+  "bundle_id": "oxxlplay-xlplay_capture_values_formulae_001",
+  "scenario_id": "xlplay_capture_values_formulae_001",
+  "pack_impact": "candidate validate/ingest surface for PACK.replay.appliance",
+  "capability_impact": "shared validate/ingest surface only; no adapter capability claim",
+  "errors": [],
+  "warnings": [],
+  "index": {
+    "registry_families": [],
+    "sidecar_artifacts": [
+      {
+        "path": "bundle.json"
+      },
+      {
+        "path": "capture.json"
+      },
+      {
+        "path": "provenance.json"
+      },
+      {
+        "path": "environment.json"
+      },
+      {
+        "path": "bridge.json"
+      }
+    ],
+    "view_artifacts": [
+      {
+        "path": "views/normalized-replay.json"
+      }
+    ]
+  }
+}

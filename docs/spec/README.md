@@ -1,16 +1,20 @@
-# OxXlObs Spec Index
+# OxXlPlay Spec Index
 
-This directory is the OxXlObs-owned mutable spec set after bootstrap.
+This directory is the OxXlPlay-owned mutable spec set after bootstrap.
 
 ## Canonical local spec ownership
-1. `docs/spec/OXXLOBS_SCOPE_AND_BOUNDARY.md`
-2. `docs/spec/OXXLOBS_ARCHITECTURE_AND_CAPTURE_MODEL.md`
-3. `docs/spec/OXXLOBS_ENVIRONMENT_AND_PROVENANCE_MODEL.md`
-4. `docs/spec/OXXLOBS_BUNDLE_EMISSION_AND_HANDOFF_MODEL.md`
-5. `docs/spec/OXXLOBS_IMPLEMENTATION_BASELINE.md`
-6. `docs/spec/OXXLOBS_SCENARIO_REGISTER.md`
-7. `docs/spec/OXXLOBS_CAPABILITY_AND_PACK_TRACEABILITY.md`
-8. `docs/spec/OXXLOBS_CLI_CONTRACT.md`
+1. `docs/spec/OXXLPLAY_SCOPE_AND_BOUNDARY.md`
+2. `docs/spec/OXXLPLAY_ARCHITECTURE_AND_CAPTURE_MODEL.md`
+3. `docs/spec/OXXLPLAY_ENVIRONMENT_AND_PROVENANCE_MODEL.md`
+4. `docs/spec/OXXLPLAY_BUNDLE_EMISSION_AND_HANDOFF_MODEL.md`
+5. `docs/spec/OXXLPLAY_IMPLEMENTATION_BASELINE.md`
+6. `docs/spec/OXXLPLAY_SCENARIO_REGISTER.md`
+7. `docs/spec/OXXLPLAY_CAPABILITY_AND_PACK_TRACEABILITY.md`
+8. `docs/spec/OXXLPLAY_CLI_CONTRACT.md`
+9. `docs/spec/OXXLPLAY_ONECALC_OBSERVATION_CONSUMER_CONTRACT.md`
+
+## Downstream consumer references
+1. `docs/spec/OXXLPLAY_ONECALC_OBSERVATION_CONSUMER_CONTRACT.md` is the canonical `OxXlPlay`-side reference for `DNA OneCalc` observation-evidence consumption, comparison-envelope shape, surface classification, lossy-view labeling, and platform scope.
 
 ## Consumed doctrine
 Foundation remains higher-precedence doctrine owner for:

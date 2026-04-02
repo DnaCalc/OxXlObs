@@ -30,7 +30,7 @@ Emit canonical replay-ready bundles for `OxReplay`.
 
 ## Scenario Readiness
 1. replay classes: `bundle_seed_basic`
-2. scenario id: `xlobs_bundle_seed_handoff_001`
+2. scenario id: `xlplay_bundle_seed_handoff_001`
 
 ## Pack-Evidence Traceability
 1. `PACK.replay.appliance`

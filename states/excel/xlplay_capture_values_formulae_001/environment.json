@@ -1,0 +1,26 @@
+{
+  "scenario_id": "xlplay_capture_values_formulae_001",
+  "excel": {
+    "version": "16.0",
+    "build": "19725",
+    "channel": "http://officecdn.microsoft.com/pr/492350f6-3a01-4f97-b9c0-c7c6ddf67d60"
+  },
+  "host": {
+    "os": "Microsoft Windows 11 Pro",
+    "architecture": "x64"
+  },
+  "bridge": {
+    "kind": "external_process",
+    "version": "w006-powershell-com.v1",
+    "command_channel": "json-file",
+    "invocation_mode": "com_automation"
+  },
+  "macro_mode": "force_disable_requested",
+  "automation_policy": "clean_room_declared",
+  "captured_at_utc": "2026-03-20T19:30:49Z",
+  "timezone": "South Africa Standard Time",
+  "workbook": {
+    "ref": "docs/test-corpus/excel/xlplay_capture_values_formulae_001/workbook.xlsx",
+    "fingerprint": "sha256:e02df32eba6f09aee179247d7eaa94fed94cb7ff2b1016076621a3067b9a473d"
+  }
+}

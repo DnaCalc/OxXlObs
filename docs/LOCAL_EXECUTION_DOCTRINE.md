@@ -1,4 +1,4 @@
-# OxXlObs Local Execution Doctrine
+# OxXlPlay Local Execution Doctrine
 
 Repo-local operating lessons for Excel observation work:
 1. Declare scenario ids before widening driver code.

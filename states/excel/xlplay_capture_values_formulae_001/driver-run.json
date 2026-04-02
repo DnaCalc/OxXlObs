@@ -1,0 +1,14 @@
+{
+  "scenario_path": "docs/test-corpus/excel/xlplay_capture_values_formulae_001/scenario.json",
+  "output_dir": "states/excel/xlplay_capture_values_formulae_001",
+  "workbook_ref": "docs/test-corpus/excel/xlplay_capture_values_formulae_001/workbook.xlsx",
+  "emitted_files": [
+    "states/excel/xlplay_capture_values_formulae_001/capture.json",
+    "states/excel/xlplay_capture_values_formulae_001/provenance.json",
+    "states/excel/xlplay_capture_values_formulae_001/bridge.json",
+    "states/excel/xlplay_capture_values_formulae_001/environment.json",
+    "states/excel/xlplay_capture_values_formulae_001/bundle.json",
+    "states/excel/xlplay_capture_values_formulae_001/oxreplay-manifest.json",
+    "states/excel/xlplay_capture_values_formulae_001/views/normalized-replay.json"
+  ]
+}

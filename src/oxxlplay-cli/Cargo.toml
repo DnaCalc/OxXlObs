@@ -1,0 +1,18 @@
+[package]
+name = "oxxlplay-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+serde_json.workspace = true
+
+[[bin]]
+name = "dna-xl-play"
+path = "src/main.rs"
+
+[lints]
+workspace = true

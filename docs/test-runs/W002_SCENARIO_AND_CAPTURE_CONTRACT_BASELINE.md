@@ -8,10 +8,10 @@
 1. `pwsh ./scripts/meta-check.ps1`
 
 ## Retained fixture roots exercised
-1. `docs/test-corpus/excel/xlobs_manifest_minimal_valid_001/`
-2. `docs/test-corpus/excel/xlobs_manifest_invalid_missing_surface_001/`
-3. `docs/test-corpus/excel/xlobs_capture_values_formulae_001/`
-4. `docs/test-corpus/excel/xlobs_capture_loss_formula_unavailable_001/`
+1. `docs/test-corpus/excel/xlplay_manifest_minimal_valid_001/`
+2. `docs/test-corpus/excel/xlplay_manifest_invalid_missing_surface_001/`
+3. `docs/test-corpus/excel/xlplay_capture_values_formulae_001/`
+4. `docs/test-corpus/excel/xlplay_capture_loss_formula_unavailable_001/`
 
 ## Validation coverage
 1. Scenario validation accepts the minimal valid fixture shape.

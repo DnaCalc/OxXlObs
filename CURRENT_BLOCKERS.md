@@ -1,4 +1,4 @@
-# CURRENT_BLOCKERS.md — OxXlObs
+# CURRENT_BLOCKERS.md — OxXlPlay
 
 Status: no active blockers.
 

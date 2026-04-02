@@ -1,13 +1,13 @@
 [workspace]
 resolver = "2"
 members = [
-    "src/oxxlobs-abstractions",
-    "src/oxxlobs-scenario",
-    "src/oxxlobs-capture",
-    "src/oxxlobs-provenance",
-    "src/oxxlobs-bundle",
-    "src/oxxlobs-bridge",
-    "src/oxxlobs-cli",
+    "src/oxxlplay-abstractions",
+    "src/oxxlplay-scenario",
+    "src/oxxlplay-capture",
+    "src/oxxlplay-provenance",
+    "src/oxxlplay-bundle",
+    "src/oxxlplay-bridge",
+    "src/oxxlplay-cli",
 ]
 
 [workspace.package]
@@ -15,7 +15,7 @@ version = "0.1.0"
 edition = "2024"
 license = "MIT"
 authors = ["DNA Kode"]
-repository = "https://github.com/DnaCalc/OxXlObs"
+repository = "https://github.com/DnaCalc/OxXlPlay"
 publish = false
 
 [workspace.dependencies]

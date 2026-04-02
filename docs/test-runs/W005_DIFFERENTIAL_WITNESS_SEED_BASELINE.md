@@ -8,7 +8,7 @@
 1. `pwsh ./scripts/meta-check.ps1`
 
 ## Retained fixture roots exercised
-1. `docs/test-corpus/bundles/xlobs_witness_seed_divergence_001/`
+1. `docs/test-corpus/bundles/xlplay_witness_seed_divergence_001/`
 
 ## Validation coverage
 1. Witness validation requires a witness schema, a validated source bundle, at least one DNA-side comparison ref, and at least one retained divergence.

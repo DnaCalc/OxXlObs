@@ -8,7 +8,7 @@
 1. `pwsh ./scripts/meta-check.ps1`
 
 ## Retained fixture roots exercised
-1. `docs/test-corpus/bundles/xlobs_bundle_seed_handoff_001/`
+1. `docs/test-corpus/bundles/xlplay_bundle_seed_handoff_001/`
 
 ## Validation coverage
 1. Bundle validation requires a bundle schema, validated scenario/provenance/capture payloads, repo-relative sidecar refs, and at least one replay consumer.

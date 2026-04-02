@@ -1,4 +1,4 @@
-# AGENTS.md — OxXlObs Agent Instructions
+# AGENTS.md — OxXlPlay Agent Instructions
 
 ## 1. Context Loading Order
 
@@ -10,19 +10,19 @@ On session start, read in this order:
 5. `docs/IN_PROGRESS_FEATURE_WORKLIST.md`
 6. `docs/worksets/README.md`
 7. `docs/spec/README.md`
-8. `docs/spec/OXXLOBS_SCOPE_AND_BOUNDARY.md`
-9. `docs/spec/OXXLOBS_ARCHITECTURE_AND_CAPTURE_MODEL.md`
-10. `docs/spec/OXXLOBS_ENVIRONMENT_AND_PROVENANCE_MODEL.md`
-11. `docs/spec/OXXLOBS_BUNDLE_EMISSION_AND_HANDOFF_MODEL.md`
-12. `docs/spec/OXXLOBS_IMPLEMENTATION_BASELINE.md`
-13. `docs/spec/OXXLOBS_SCENARIO_REGISTER.md`
-14. `docs/spec/OXXLOBS_CAPABILITY_AND_PACK_TRACEABILITY.md`
-15. `docs/spec/OXXLOBS_CLI_CONTRACT.md`
+8. `docs/spec/OXXLPLAY_SCOPE_AND_BOUNDARY.md`
+9. `docs/spec/OXXLPLAY_ARCHITECTURE_AND_CAPTURE_MODEL.md`
+10. `docs/spec/OXXLPLAY_ENVIRONMENT_AND_PROVENANCE_MODEL.md`
+11. `docs/spec/OXXLPLAY_BUNDLE_EMISSION_AND_HANDOFF_MODEL.md`
+12. `docs/spec/OXXLPLAY_IMPLEMENTATION_BASELINE.md`
+13. `docs/spec/OXXLPLAY_SCENARIO_REGISTER.md`
+14. `docs/spec/OXXLPLAY_CAPABILITY_AND_PACK_TRACEABILITY.md`
+15. `docs/spec/OXXLPLAY_CLI_CONTRACT.md`
 16. Inbound observation ledgers from sibling repos, if present:
-   - `../OxReplay/docs/upstream/NOTES_FOR_OXXLOBS.md`
-   - `../OxCalc/docs/upstream/NOTES_FOR_OXXLOBS.md`
-   - `../OxFml/docs/upstream/NOTES_FOR_OXXLOBS.md`
-   - `../OxVba/docs/upstream/NOTES_FOR_OXXLOBS.md`
+   - `../OxReplay/docs/upstream/NOTES_FOR_OXXLPLAY.md`
+   - `../OxCalc/docs/upstream/NOTES_FOR_OXXLPLAY.md`
+   - `../OxFml/docs/upstream/NOTES_FOR_OXXLPLAY.md`
+   - `../OxVba/docs/upstream/NOTES_FOR_OXXLPLAY.md`
 17. Foundation doctrine docs (`../Foundation/CHARTER.md`, `../Foundation/ARCHITECTURE_AND_REQUIREMENTS.md`, `../Foundation/OPERATIONS.md`, `../Foundation/REPLAY_APPLIANCE.md`)
 
 ## 2. Source-of-Truth Precedence
@@ -74,7 +74,7 @@ If a proposed harness flow depends on non-admissible evidence or hidden reverse 
 When uncertain whether work meets completion criteria, report `in_progress`.
 
 ### Rule 8: Observation Is Not Semantic Authority
-If a proposed convenience change causes OxXlObs to infer or assert semantic meaning beyond retained black-box evidence, the change is not complete.
+If a proposed convenience change causes OxXlPlay to infer or assert semantic meaning beyond retained black-box evidence, the change is not complete.
 
 ## 4. Continuation Behavior
 
@@ -101,7 +101,7 @@ For any external/public-facing message authored by an agent, the first line must
 ## 7. Change Discipline
 
 1. Keep changes minimal, explicit, and testable.
-2. Keep OxXlObs from absorbing semantic ownership or replay-governance ownership.
+2. Keep OxXlPlay from absorbing semantic ownership or replay-governance ownership.
 3. Treat Excel-driving seams as observation boundaries, not truth sources.
 4. Place new local policy in the most specific spec file practical.
 5. Require explicit capability and pack impact notes for changes touching replay-handoff surfaces.

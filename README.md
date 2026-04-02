@@ -1,6 +1,6 @@
-# OxXlObs
+# OxXlPlay
 
-OxXlObs is the Excel observation harness repo for DNA Calc.
+OxXlPlay is the Excel observation harness repo for DNA Calc.
 
 It exists to turn controlled Excel runs into replay-ready, schema-checked evidence bundles that feed the Replay appliance without turning Excel into a new semantics lane.
 
@@ -51,10 +51,10 @@ Minimum repo-orientation read order:
 The repo starts doc-first and Rust-first so the clean-room observation boundary and replay handoff contract are fixed before heavy Excel-driving work lands.
 The bootstrap packet is now `complete` through `W006`, with the first retained live Excel-driven capture family exercised under `states/excel/`.
 The next lane widens from local bootstrap into cross-repo replay and differential consumption.
-The current `W007` direction is to emit an `OxReplay`-canonical replay manifest over the richer `OxXlObs` observation bundle rather than collapsing the observation contract into a thin shared-runtime shape.
+The current `W007` direction is to emit an `OxReplay`-canonical replay manifest over the richer `OxXlPlay` observation bundle rather than collapsing the observation contract into a thin shared-runtime shape.
 
 ## Implementation Direction
-1. OxXlObs is Rust-first for scenario planning, provenance handling, bundle assembly, CLI surfaces, and most harness logic.
+1. OxXlPlay is Rust-first for scenario planning, provenance handling, bundle assembly, CLI surfaces, and most harness logic.
 2. The active implementation lives under `src/` as a Cargo workspace with crate boundaries that follow the declared observation strata.
 3. A narrow external bridge seam is allowed where stable Excel automation requires Windows-specific interop that is better hosted outside pure Rust. That seam must remain explicit, versioned, and evidence-bearing.
 4. New execution should follow the local Rust quality floor:

@@ -32,7 +32,7 @@ Shape Excel-vs-DNA divergences into replay/diff/explain-ready witness seeds.
 
 ## Scenario Readiness
 1. replay classes: `witness_seed_diff`
-2. scenario id: `xlobs_witness_seed_divergence_001`
+2. scenario id: `xlplay_witness_seed_divergence_001`
 
 ## Pack-Evidence Traceability
 1. `PACK.diff.cross_engine.continuous`
