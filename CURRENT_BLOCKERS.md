@@ -2,7 +2,7 @@
 
 Status: no active blockers.
 
-Last reviewed: 2026-03-20 (`W007` OxReplay seam activation review, no active blockers).
+Last reviewed: 2026-04-06 (`W008` SpreadsheetML verification observation expansion review, no active blockers).
 
 ---
 

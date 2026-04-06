@@ -1,0 +1,42 @@
+{
+  "scenario_id": "xlplay_capture_spreadsheetml_formatting_001",
+  "view_family": "formatting_view",
+  "surfaces": [
+    {
+      "surface_id": "input_a1_number_format",
+      "surface_kind": "number_format_code",
+      "locator": "Input!A1",
+      "status": "derived",
+      "capture_loss": "none",
+      "uncertainty": "post_processed",
+      "value_repr": "$#,##0.00"
+    },
+    {
+      "surface_id": "input_a1_style_id",
+      "surface_kind": "style_id",
+      "locator": "Input!A1",
+      "status": "derived",
+      "capture_loss": "none",
+      "uncertainty": "post_processed",
+      "value_repr": "calc"
+    },
+    {
+      "surface_id": "input_a1_font_color",
+      "surface_kind": "font_color",
+      "locator": "Input!A1",
+      "status": "derived",
+      "capture_loss": "none",
+      "uncertainty": "post_processed",
+      "value_repr": "#112233"
+    },
+    {
+      "surface_id": "input_a1_fill_color",
+      "surface_kind": "fill_color",
+      "locator": "Input!A1",
+      "status": "derived",
+      "capture_loss": "none",
+      "uncertainty": "post_processed",
+      "value_repr": "#445566"
+    }
+  ]
+}

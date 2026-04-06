@@ -1,0 +1,26 @@
+{
+  "scenario_id": "xlplay_capture_spreadsheetml_formatting_001",
+  "excel": {
+    "version": "16.0",
+    "build": "19822",
+    "channel": "http://officecdn.microsoft.com/pr/492350f6-3a01-4f97-b9c0-c7c6ddf67d60"
+  },
+  "host": {
+    "os": "Microsoft Windows 11 Pro",
+    "architecture": "x64"
+  },
+  "bridge": {
+    "kind": "external_process",
+    "version": "w006-powershell-com.v1",
+    "command_channel": "json-file",
+    "invocation_mode": "com_automation"
+  },
+  "macro_mode": "force_disable_requested",
+  "automation_policy": "clean_room_declared",
+  "captured_at_utc": "2026-04-06T14:59:57Z",
+  "timezone": "South Africa Standard Time",
+  "workbook": {
+    "ref": "docs/test-corpus/excel/xlplay_capture_spreadsheetml_formatting_001/workbook.xml",
+    "fingerprint": "sha256:ea917ed9ebc9197b0bf0e2deca3161ebd9c1b05bbacb191820aa2b3652e4dd75"
+  }
+}

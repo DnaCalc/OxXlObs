@@ -10,6 +10,7 @@ Worksets are the execution units for OxXlPlay.
 5. `W005_DIFFERENTIAL_WITNESS_SEED_BASELINE.md`
 6. `W006_STABLE_WINDOWS_EXECUTION_DRIVER.md`
 7. `W007_FIRST_CROSS_REPO_REPLAY_AND_DIFF_CONSUMPTION.md`
+8. `W008_SPREADSHEETML_VERIFICATION_OBSERVATION_EXPANSION.md`
 
 ## Workset rule
 Workset files in this directory are the execution packets for OxXlPlay.

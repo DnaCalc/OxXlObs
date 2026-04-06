@@ -1,0 +1,18 @@
+{
+  "scenario_path": "docs/test-corpus/excel/xlplay_capture_spreadsheetml_formatting_001/scenario.json",
+  "output_dir": "states/excel/xlplay_capture_spreadsheetml_formatting_001",
+  "workbook_ref": "docs/test-corpus/excel/xlplay_capture_spreadsheetml_formatting_001/workbook.xml",
+  "emitted_files": [
+    "states/excel/xlplay_capture_spreadsheetml_formatting_001/capture.json",
+    "states/excel/xlplay_capture_spreadsheetml_formatting_001/provenance.json",
+    "states/excel/xlplay_capture_spreadsheetml_formatting_001/bridge.json",
+    "states/excel/xlplay_capture_spreadsheetml_formatting_001/environment.json",
+    "states/excel/xlplay_capture_spreadsheetml_formatting_001/bundle.json",
+    "states/excel/xlplay_capture_spreadsheetml_formatting_001/oxreplay-manifest.json",
+    "states/excel/xlplay_capture_spreadsheetml_formatting_001/views/normalized-replay.json",
+    "states/excel/xlplay_capture_spreadsheetml_formatting_001/views/visible-value.json",
+    "states/excel/xlplay_capture_spreadsheetml_formatting_001/views/effective-display-text.json",
+    "states/excel/xlplay_capture_spreadsheetml_formatting_001/views/formatting-view.json",
+    "states/excel/xlplay_capture_spreadsheetml_formatting_001/views/conditional-formatting-view.json"
+  ]
+}

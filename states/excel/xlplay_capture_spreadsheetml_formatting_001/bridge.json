@@ -1,0 +1,22 @@
+{
+  "scenario_id": "xlplay_capture_spreadsheetml_formatting_001",
+  "bridge_kind": "external_process",
+  "bridge_version": "w006-powershell-com.v1",
+  "executable_identity": "pwsh:scripts/invoke-excel-observation.ps1",
+  "command_channel": "json-file",
+  "invocation_mode": "com_automation",
+  "interpretation_limits": [
+    {
+      "kind": "effective_display_host_rendered",
+      "detail": "effective_display_text reflects host-rendered Excel text on the observation machine."
+    },
+    {
+      "kind": "spreadsheet_ml_source_projection",
+      "detail": "SpreadsheetML 2003 style, format, and conditional-formatting rule surfaces are retained from the source workbook as derived observation artifacts when Excel import does not preserve those identifiers directly."
+    },
+    {
+      "kind": "conditional_formatting_rule_projection",
+      "detail": "conditional_formatting_effective_style is derived for SpreadsheetML expression rules by combining source-declared rule payloads with Excel formula evaluation on the target cell."
+    }
+  ]
+}

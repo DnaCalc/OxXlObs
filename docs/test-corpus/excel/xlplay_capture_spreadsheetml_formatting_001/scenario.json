@@ -1,0 +1,64 @@
+{
+  "scenario_id": "xlplay_capture_spreadsheetml_formatting_001",
+  "replay_class": "capture_surface_spreadsheetml_formatting",
+  "retained_root": "docs/test-corpus/excel/xlplay_capture_spreadsheetml_formatting_001",
+  "workbook_ref": "docs/test-corpus/excel/xlplay_capture_spreadsheetml_formatting_001/workbook.xml",
+  "trigger": "open_then_recalc",
+  "workbook_kind": "spreadsheetml-2003-import",
+  "observable_surfaces": [
+    {
+      "surface_id": "input_a1_value",
+      "surface_kind": "cell_value",
+      "locator": "Input!A1",
+      "required": true
+    },
+    {
+      "surface_id": "input_a1_formula",
+      "surface_kind": "formula_text",
+      "locator": "Input!A1",
+      "required": true
+    },
+    {
+      "surface_id": "input_a1_effective_display",
+      "surface_kind": "effective_display_text",
+      "locator": "Input!A1",
+      "required": true
+    },
+    {
+      "surface_id": "input_a1_number_format",
+      "surface_kind": "number_format_code",
+      "locator": "Input!A1",
+      "required": true
+    },
+    {
+      "surface_id": "input_a1_style_id",
+      "surface_kind": "style_id",
+      "locator": "Input!A1",
+      "required": true
+    },
+    {
+      "surface_id": "input_a1_font_color",
+      "surface_kind": "font_color",
+      "locator": "Input!A1",
+      "required": true
+    },
+    {
+      "surface_id": "input_a1_fill_color",
+      "surface_kind": "fill_color",
+      "locator": "Input!A1",
+      "required": true
+    },
+    {
+      "surface_id": "input_a1_conditional_rules",
+      "surface_kind": "conditional_formatting_rules",
+      "locator": "Input!A1",
+      "required": true
+    },
+    {
+      "surface_id": "input_a1_conditional_effective_style",
+      "surface_kind": "conditional_formatting_effective_style",
+      "locator": "Input!A1",
+      "required": true
+    }
+  ]
+}

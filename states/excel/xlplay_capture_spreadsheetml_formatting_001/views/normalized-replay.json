@@ -1,0 +1,148 @@
+{
+  "scenario_id": "xlplay_capture_spreadsheetml_formatting_001",
+  "lane_id": "oxxlplay",
+  "events": [
+    {
+      "event_id": "input_a1_value",
+      "source_label": "cell_value:Input!A1:direct",
+      "normalized_family": "excel.surface.cell_value.direct:Input!A1=6"
+    },
+    {
+      "event_id": "input_a1_formula",
+      "source_label": "formula_text:Input!A1:direct",
+      "normalized_family": "excel.surface.formula_text.direct:Input!A1==SUM(1,2,3)"
+    },
+    {
+      "event_id": "input_a1_effective_display",
+      "source_label": "effective_display_text:Input!A1:direct",
+      "normalized_family": "excel.surface.effective_display_text.direct:Input!A1=$6.00"
+    },
+    {
+      "event_id": "input_a1_number_format",
+      "source_label": "number_format_code:Input!A1:derived",
+      "normalized_family": "excel.surface.number_format_code.derived:Input!A1=$#,##0.00"
+    },
+    {
+      "event_id": "input_a1_style_id",
+      "source_label": "style_id:Input!A1:derived",
+      "normalized_family": "excel.surface.style_id.derived:Input!A1=calc"
+    },
+    {
+      "event_id": "input_a1_font_color",
+      "source_label": "font_color:Input!A1:derived",
+      "normalized_family": "excel.surface.font_color.derived:Input!A1=#112233"
+    },
+    {
+      "event_id": "input_a1_fill_color",
+      "source_label": "fill_color:Input!A1:derived",
+      "normalized_family": "excel.surface.fill_color.derived:Input!A1=#445566"
+    },
+    {
+      "event_id": "input_a1_conditional_rules",
+      "source_label": "conditional_formatting_rules:Input!A1:derived",
+      "normalized_family": "excel.surface.conditional_formatting_rules.derived:Input!A1={\"range\":\"A1\",\"formula\":\"=A1>0\",\"value1\":null,\"value2\":null,\"operator\":null,\"rule_kind\":\"Expression\",\"font_color\":\"#FF0000\",\"fill_color\":\"#00FF00\"}"
+    },
+    {
+      "event_id": "input_a1_conditional_effective_style",
+      "source_label": "conditional_formatting_effective_style:Input!A1:derived",
+      "normalized_family": "excel.surface.conditional_formatting_effective_style.derived:Input!A1={\"number_format_code\":\"$#,##0.00\",\"font_color\":\"#FF0000\",\"fill_color\":\"#00FF00\",\"effective_display_text\":\"$6.00\",\"applied_rule_indexes\":[1],\"source_projection\":\"spreadsheetml_expression_rules_v1\"}"
+    }
+  ],
+  "registry_refs": [],
+  "comparison_views": [
+    {
+      "view_family": "visible_value",
+      "value": "6"
+    },
+    {
+      "view_family": "effective_display_text",
+      "value": "$6.00"
+    },
+    {
+      "view_family": "formatting_view",
+      "value": {
+        "number_format_code": "$#,##0.00",
+        "style_id": "calc",
+        "font_color": "#112233",
+        "fill_color": "#445566"
+      }
+    },
+    {
+      "view_family": "conditional_formatting_view",
+      "value": {
+        "rules": [
+          {
+            "range": "A1",
+            "formula": "=A1>0",
+            "value1": null,
+            "value2": null,
+            "operator": null,
+            "rule_kind": "expression",
+            "font_color": "#FF0000",
+            "fill_color": "#00FF00"
+          }
+        ],
+        "effective_style": {
+          "number_format_code": "$#,##0.00",
+          "font_color": "#FF0000",
+          "fill_color": "#00FF00",
+          "effective_display_text": "$6.00",
+          "applied_rule_indexes": [
+            1
+          ],
+          "source_projection": "spreadsheetml_expression_rules_v1"
+        }
+      }
+    }
+  ],
+  "source_metadata": {
+    "source_schema_id": "oxxlplay.normalized_replay.v1",
+    "projection_status": "lossy",
+    "capture_mode": "excel_black_box_observation",
+    "workbook_ref": "docs/test-corpus/excel/xlplay_capture_spreadsheetml_formatting_001/workbook.xml",
+    "workbook_fingerprint": "sha256:ea917ed9ebc9197b0bf0e2deca3161ebd9c1b05bbacb191820aa2b3652e4dd75",
+    "workbook_kind": "spreadsheetml-2003-import",
+    "trigger": "open_then_recalc",
+    "run_id": "run_xlplay_capture_spreadsheetml_formatting_001_20260406_170000",
+    "automation_policy": "clean_room_declared",
+    "macro_mode": "force_disable_requested",
+    "captured_at_utc": "2026-04-06T14:59:57Z",
+    "excel": {
+      "version": "16.0",
+      "build": "19822",
+      "channel": "http://officecdn.microsoft.com/pr/492350f6-3a01-4f97-b9c0-c7c6ddf67d60"
+    },
+    "host": {
+      "os": "Microsoft Windows 11 Pro",
+      "architecture": "x64",
+      "timezone": "South Africa Standard Time"
+    },
+    "capture_loss_summary": [],
+    "capture_loss": "none",
+    "uncertainty_summary": [
+      "post_processed"
+    ],
+    "bridge_influenced": true,
+    "interpretation_limits": [
+      {
+        "kind": "effective_display_host_rendered",
+        "detail": "effective_display_text reflects host-rendered Excel text on the observation machine."
+      },
+      {
+        "kind": "spreadsheet_ml_source_projection",
+        "detail": "SpreadsheetML 2003 style, format, and conditional-formatting rule surfaces are retained from the source workbook as derived observation artifacts when Excel import does not preserve those identifiers directly."
+      },
+      {
+        "kind": "conditional_formatting_rule_projection",
+        "detail": "conditional_formatting_effective_style is derived for SpreadsheetML expression rules by combining source-declared rule payloads with Excel formula evaluation on the target cell."
+      }
+    ],
+    "unavailable_surfaces": [],
+    "comparison_view_families": [
+      "visible_value",
+      "effective_display_text",
+      "formatting_view",
+      "conditional_formatting_view"
+    ]
+  }
+}

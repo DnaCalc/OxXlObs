@@ -30,6 +30,10 @@
    - status: in_progress
    - objective: stand up the first cross-repo consumption pass through `OxReplay` and `OxCalc` over retained live Excel evidence.
    - current baseline: `OxReplay` now validates an `OxXlPlay`-emitted canonical replay manifest and replay-loads the first normalized replay view from `states/excel/xlplay_capture_values_formulae_001/`; the `OxCalc` comparison leg remains open.
+8. `W008_SPREADSHEETML_VERIFICATION_OBSERVATION_EXPANSION`
+   - status: in_progress
+   - objective: stand up the first SpreadsheetML 2003 observation family for XML-backed downstream verification consumers.
+   - current baseline: `capture-run` now retains the first SpreadsheetML family at `states/excel/xlplay_capture_spreadsheetml_formatting_001/`, widens DnaOneCalc-style XML scenarios through `requested_observation_scope.oxxlplay_required_surfaces`, and emits direct display plus derived formatting and conditional-formatting evidence with replay-adjacent view files.
 
 ## Activation note
 1. The Rust-first stack is declared for the repo.
@@ -37,11 +41,14 @@
 3. `W006` remains sequenced after `W005`; activation still depends on explicit scope, named capability/pack impact, and declared dependencies.
 4. `W006` now retains the first live Excel-driven capture family and associated replay-ready bundle evidence.
 5. `W007` is now active over the first `OxReplay` ingestion pass and remains open until the `OxCalc` comparison leg and seam clarifications are retained.
+6. `W008` is now active for SpreadsheetML 2003 display/formatting observation expansion and remains open until sibling replay/view consumption clarifications are retained.
 
 ## Downstream consumer contract status
 1. `DNA OneCalc` observation-consumer contract is now explicit at `docs/spec/OXXLPLAY_ONECALC_OBSERVATION_CONSUMER_CONTRACT.md`.
 2. The contract defines the first comparison-ready observation family, comparison envelope, surface classification, lossy-view labeling, and platform scope.
 3. Open consumer-side gaps: the `OxCalc` comparison leg of `W007` remains open, the comparison envelope is narrow (cell value and formula text only), no formatting or display-state observation exists, and the richer `OxXlPlay` diff or equality envelope is provisional scope.
+4. The first SpreadsheetML observation family now widens the `DNA OneCalc` envelope with direct `effective_display_text` plus derived `number_format_code`, `style_id`, `font_color`, `fill_color`, `conditional_formatting_rules`, and `conditional_formatting_effective_style`.
+5. Honest limits remain explicit: those widened SpreadsheetML formatting and conditional-formatting surfaces are currently retained as `derived`, not `direct`, and the CF effective-style projection is scoped to the admitted expression-rule subset.
 
 ## Reserved follow-on lane entry
 1. `OxReplay` is the first consumer expected to validate bundle quality and replay readiness.

@@ -1,0 +1,44 @@
+{
+  "scenario_id": "xlplay_capture_spreadsheetml_formatting_001",
+  "view_family": "conditional_formatting_view",
+  "surfaces": [
+    {
+      "surface_id": "input_a1_conditional_rules",
+      "surface_kind": "conditional_formatting_rules",
+      "locator": "Input!A1",
+      "status": "derived",
+      "capture_loss": "none",
+      "uncertainty": "post_processed",
+      "value_repr": null,
+      "value_json": {
+        "range": "A1",
+        "formula": "=A1>0",
+        "value1": null,
+        "value2": null,
+        "operator": null,
+        "rule_kind": "Expression",
+        "font_color": "#FF0000",
+        "fill_color": "#00FF00"
+      }
+    },
+    {
+      "surface_id": "input_a1_conditional_effective_style",
+      "surface_kind": "conditional_formatting_effective_style",
+      "locator": "Input!A1",
+      "status": "derived",
+      "capture_loss": "none",
+      "uncertainty": "post_processed",
+      "value_repr": null,
+      "value_json": {
+        "number_format_code": "$#,##0.00",
+        "font_color": "#FF0000",
+        "fill_color": "#00FF00",
+        "effective_display_text": "$6.00",
+        "applied_rule_indexes": [
+          1
+        ],
+        "source_projection": "spreadsheetml_expression_rules_v1"
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "scenario_id": "xlplay_capture_spreadsheetml_formatting_001",
+  "view_family": "visible_value",
+  "surfaces": [
+    {
+      "surface_id": "input_a1_value",
+      "surface_kind": "cell_value",
+      "locator": "Input!A1",
+      "status": "direct",
+      "capture_loss": "none",
+      "uncertainty": "none",
+      "value_repr": "6"
+    }
+  ]
+}

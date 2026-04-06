@@ -79,3 +79,11 @@ The retained W003 baseline uses JSON fixture files to pin environment and bridge
    - `invocation_mode`: `com_automation`
 3. Live provenance may retain the raw local Office channel string when the host reports a Click-to-Run URL rather than a normalized channel label.
 4. The retained state snapshot remains a host-bound environment witness and must keep workbook fingerprint, Excel build, macro mode, and bridge provenance explicit.
+
+## 6. W008 SpreadsheetML interpretation baseline
+1. The first SpreadsheetML family also retains bridge interpretation limits alongside provenance.
+2. Current retained limits are:
+   - `effective_display_host_rendered`
+   - `spreadsheet_ml_source_projection`
+   - `conditional_formatting_rule_projection`
+3. These limits make explicit that widened formatting and conditional-formatting payloads in the SpreadsheetML family include derived source-backed projections in addition to direct Excel observation.

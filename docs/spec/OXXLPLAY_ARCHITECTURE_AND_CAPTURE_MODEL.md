@@ -89,3 +89,21 @@ The retained W002 baseline uses JSON fixture files inside declared scenario root
 3. The current stable scenario family is `xlplay_capture_values_formulae_001`.
 4. The current bridge opens the declared workbook through Excel COM automation, applies `open_then_recalc`, and retains direct cell-value and formula-text surfaces.
 5. Live driver outputs are retained under `states/excel/<scenario_id>/` and remain observational evidence, not semantic authority.
+
+## 9. W008 SpreadsheetML capture baseline
+1. `W008` introduces the first retained SpreadsheetML 2003 observation family at `xlplay_capture_spreadsheetml_formatting_001`.
+2. The widened surface family admits:
+   - `cell_value`
+   - `formula_text`
+   - `effective_display_text`
+   - `number_format_code`
+   - `style_id`
+   - `font_color`
+   - `fill_color`
+   - `conditional_formatting_rules`
+   - `conditional_formatting_effective_style`
+3. `cell_value` is captured directly from `Range.Value2`; `effective_display_text` is captured directly from `Range.Text`.
+4. For SpreadsheetML 2003 source-backed formatting projection, OxXlPlay resolves inherited style properties through SpreadsheetML `ss:Parent` chains before deriving `number_format_code`, `font_color`, and `fill_color`.
+4. SpreadsheetML source-derived style, format, and conditional-formatting rule payloads are retained as `derived` surfaces when Excel XML import does not preserve those identifiers verbatim through COM on the exercised host.
+5. `conditional_formatting_effective_style` is currently retained as a `derived` projection for the admitted SpreadsheetML expression-rule subset by combining source rule payloads with Excel formula evaluation on the target cell.
+6. The widened family keeps direct-versus-derived status, capture-loss, uncertainty, and interpretation-limit lanes explicit so downstream consumers do not mistake source-backed projections for direct Excel observation.

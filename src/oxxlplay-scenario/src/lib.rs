@@ -79,7 +79,9 @@ pub fn validate_scenario(scenario: &ObservationScenario) -> Result<(), ScenarioV
 #[cfg(test)]
 mod tests {
     use super::{ObservationScenario, ScenarioValidationError, validate_scenario};
-    use oxxlplay_abstractions::{ObservableSurface, ObservableSurfaceKind, ReplayClass, ScenarioId};
+    use oxxlplay_abstractions::{
+        ObservableSurface, ObservableSurfaceKind, ReplayClass, ScenarioId,
+    };
 
     const VALID_SCENARIO_FIXTURE: &str = include_str!(
         "../../../docs/test-corpus/excel/xlplay_manifest_minimal_valid_001/scenario.json"

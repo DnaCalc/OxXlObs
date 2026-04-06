@@ -1,0 +1,151 @@
+{
+  "surfaces": [
+    {
+      "surface": {
+        "surface_id": "input_a1_value",
+        "surface_kind": "cell_value",
+        "locator": "Input!A1",
+        "required": true
+      },
+      "status": "direct",
+      "value_repr": "6",
+      "capture_loss": "none",
+      "uncertainty": "none"
+    },
+    {
+      "surface": {
+        "surface_id": "input_a1_formula",
+        "surface_kind": "formula_text",
+        "locator": "Input!A1",
+        "required": true
+      },
+      "status": "direct",
+      "value_repr": "=SUM(1,2,3)",
+      "capture_loss": "none",
+      "uncertainty": "none"
+    },
+    {
+      "surface": {
+        "surface_id": "input_a1_effective_display",
+        "surface_kind": "effective_display_text",
+        "locator": "Input!A1",
+        "required": true
+      },
+      "status": "direct",
+      "value_repr": "$6.00",
+      "capture_loss": "none",
+      "uncertainty": "none"
+    },
+    {
+      "surface": {
+        "surface_id": "input_a1_number_format",
+        "surface_kind": "number_format_code",
+        "locator": "Input!A1",
+        "required": true
+      },
+      "status": "derived",
+      "value_repr": "$#,##0.00",
+      "capture_loss": "none",
+      "uncertainty": "post_processed"
+    },
+    {
+      "surface": {
+        "surface_id": "input_a1_style_id",
+        "surface_kind": "style_id",
+        "locator": "Input!A1",
+        "required": true
+      },
+      "status": "derived",
+      "value_repr": "calc",
+      "capture_loss": "none",
+      "uncertainty": "post_processed"
+    },
+    {
+      "surface": {
+        "surface_id": "input_a1_font_color",
+        "surface_kind": "font_color",
+        "locator": "Input!A1",
+        "required": true
+      },
+      "status": "derived",
+      "value_repr": "#112233",
+      "capture_loss": "none",
+      "uncertainty": "post_processed"
+    },
+    {
+      "surface": {
+        "surface_id": "input_a1_fill_color",
+        "surface_kind": "fill_color",
+        "locator": "Input!A1",
+        "required": true
+      },
+      "status": "derived",
+      "value_repr": "#445566",
+      "capture_loss": "none",
+      "uncertainty": "post_processed"
+    },
+    {
+      "surface": {
+        "surface_id": "input_a1_conditional_rules",
+        "surface_kind": "conditional_formatting_rules",
+        "locator": "Input!A1",
+        "required": true
+      },
+      "status": "derived",
+      "value_repr": null,
+      "value_json": [
+        {
+          "range": "A1",
+          "formula": "=A1>0",
+          "value1": null,
+          "value2": null,
+          "operator": null,
+          "rule_kind": "Expression",
+          "font_color": "#FF0000",
+          "fill_color": "#00FF00"
+        }
+      ],
+      "capture_loss": "none",
+      "uncertainty": "post_processed"
+    },
+    {
+      "surface": {
+        "surface_id": "input_a1_conditional_effective_style",
+        "surface_kind": "conditional_formatting_effective_style",
+        "locator": "Input!A1",
+        "required": true
+      },
+      "status": "derived",
+      "value_repr": null,
+      "value_json": {
+        "number_format_code": "$#,##0.00",
+        "font_color": "#FF0000",
+        "fill_color": "#00FF00",
+        "effective_display_text": "$6.00",
+        "applied_rule_indexes": [
+          1
+        ],
+        "source_projection": "spreadsheetml_expression_rules_v1"
+      },
+      "capture_loss": "none",
+      "uncertainty": "post_processed"
+    }
+  ],
+  "interpretation": {
+    "bridge_influenced": true,
+    "interpretation_limits": [
+      {
+        "kind": "effective_display_host_rendered",
+        "detail": "effective_display_text reflects host-rendered Excel text on the observation machine."
+      },
+      {
+        "kind": "spreadsheet_ml_source_projection",
+        "detail": "SpreadsheetML 2003 style, format, and conditional-formatting rule surfaces are retained from the source workbook as derived observation artifacts when Excel import does not preserve those identifiers directly."
+      },
+      {
+        "kind": "conditional_formatting_rule_projection",
+        "detail": "conditional_formatting_effective_style is derived for SpreadsheetML expression rules by combining source-declared rule payloads with Excel formula evaluation on the target cell."
+      }
+    ]
+  }
+}

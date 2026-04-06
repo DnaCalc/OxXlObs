@@ -13,8 +13,8 @@ It does not define replay doctrine, comparison semantics, or product UI behavior
 3. `DNA OneCalc` consumes `OxXlPlay` evidence through `OxReplay` replay-manifest intake and through direct retained-artifact access for provenance and lossiness inspection.
 4. `DNA OneCalc` must not locally reinterpret `OxXlPlay` capture-loss markers or lossiness declarations.
 
-## 3. First Comparison-Ready Observation Family
-The first honest comparison-ready observation family is:
+## 3. Comparison-Ready Observation Families
+The first retained comparison-ready observation families are:
 
 | Field | Value |
 |---|---|
@@ -41,6 +41,37 @@ The first honest comparison-ready observation family is:
 3. Multi-sheet or cross-reference observation.
 4. Error-surface or diagnostic-surface observation beyond the declared baseline.
 5. Semantic equivalence claims against DNA lane outputs.
+
+### 3.3 First SpreadsheetML XML-Backed Observation Family
+
+| Field | Value |
+|---|---|
+| Scenario id | `xlplay_capture_spreadsheetml_formatting_001` |
+| Replay class | `capture_surface_spreadsheetml_formatting` |
+| Capability floor | `O6.spreadsheetml_observation_valid` |
+| Workset | `W008` |
+| Retained root | `states/excel/xlplay_capture_spreadsheetml_formatting_001/` |
+| Platform | Windows-only live capture, cross-platform retained JSON consumption |
+| Bridge | `external_process` / `w006-powershell-com.v1` |
+
+### 3.4 What The SpreadsheetML Family Provides
+1. Direct `cell_value` from `Range.Value2`.
+2. Direct `formula_text` where accessible through the COM bridge.
+3. Direct `effective_display_text` from host-rendered Excel `Range.Text`.
+4. Derived SpreadsheetML-source-backed `number_format_code`, `style_id`, `font_color`, `fill_color`, and `conditional_formatting_rules` payloads when Excel XML import does not preserve those source identifiers directly through COM on the exercised host.
+5. SpreadsheetML style inheritance is resolved through declared parent-style chains before those derived formatting payloads are emitted.
+6. Derived `conditional_formatting_effective_style` for the admitted SpreadsheetML expression-rule subset by combining source rule payloads with Excel formula evaluation on the target cell.
+7. Replay-facing `comparison_views` in `views/normalized-replay.json` for:
+   - `visible_value`
+   - `effective_display_text`
+   - `formatting_view`
+   - `conditional_formatting_view`
+8. Replay-adjacent sidecar view files for the same families under `views/`.
+
+### 3.5 What The SpreadsheetML Family Does Not Yet Provide
+1. Direct COM-preserved style ids or conditional-formatting carriers for SpreadsheetML import on the exercised host.
+2. Broad CF rule-kind coverage beyond the admitted expression-rule subset.
+3. Any claim that derived SpreadsheetML source projections are semantically equivalent to direct Excel formatting introspection.
 
 ## 4. Observation Surface Classification
 Every `OxXlPlay` captured surface carries a `status` field. `DNA OneCalc` must preserve and surface this classification.
@@ -82,7 +113,21 @@ The following surface kinds are not yet observed or retained by the current fami
 5. Multi-cell range or structured-reference surfaces.
 6. Named-range or name-manager surfaces.
 
-### 5.3 Envelope Expansion Rule
+### 5.3 Current Comparison Envelope For `xlplay_capture_spreadsheetml_formatting_001`
+
+| Surface kind | Status | Comparison eligibility | Notes |
+|---|---|---|---|
+| Cell value | `direct` | Eligible for direct value comparison | Captured from `Range.Value2` |
+| Formula text | `direct` | Eligible for direct formula-text comparison | Captured from COM |
+| Effective display text | `direct` | Eligible for direct display comparison with host-rendered qualifier | Captured from `Range.Text` |
+| Number format code | `derived` | Eligible with `derived` label | Source-backed SpreadsheetML projection |
+| Style id | `derived` | Eligible with `derived` label | Source-backed SpreadsheetML projection |
+| Font color | `derived` | Eligible with `derived` label | Source-backed SpreadsheetML projection |
+| Fill color | `derived` | Eligible with `derived` label | Source-backed SpreadsheetML projection |
+| Conditional-formatting rules | `derived` | Eligible with `derived` label | Source-backed rule payload |
+| Conditional-formatting effective style | `derived` | Eligible with `derived` label and subset qualifier | Admitted expression-rule projection only |
+
+### 5.4 Envelope Expansion Rule
 When future observation families add surfaces, the comparison envelope for that family expands. `DNA OneCalc` should derive comparison eligibility from the retained `capture.json` surface classification rather than from a hardcoded surface list.
 
 ## 6. Lossy Replay-Facing Normalized Views
@@ -91,13 +136,15 @@ The `OxReplay`-facing normalized replay view at `views/normalized-replay.json` i
 ### 6.1 Labeling Rule
 1. The normalized replay view is explicitly `lossy`. It does not preserve the full observation fidelity of the source bundle.
 2. The canonical replay manifest (`oxreplay-manifest.json`) must declare the projection status. If the replay-facing view is only a partial or lossy projection, the manifest must state that explicitly.
-3. The richer `OxXlPlay` observation bundle and its sidecars remain retained alongside the normalized view and must not be discarded.
+3. The normalized replay view now carries machine-readable `comparison_views` and `source_metadata`, but that widening does not reassign semantic ownership away from the richer source observation bundle.
+4. The richer `OxXlPlay` observation bundle and its sidecars remain retained alongside the normalized view and must not be discarded.
 
 ### 6.2 Interpretation Rule For DNA OneCalc
 1. `DNA OneCalc` must not present the normalized replay view as a complete semantic equivalence surface.
-2. When showing comparison results derived from the normalized replay view, `DNA OneCalc` must label them as `lossy` in comparison-reliability badges.
-3. For richer comparison fidelity, `DNA OneCalc` should consult the source observation bundle and its provenance sidecars rather than relying solely on the normalized view.
-4. The long-term direction is for the normalized view to gain fidelity. The current `lossy` label reflects the present floor, not a permanent design choice.
+2. When `comparison_views` are present, `DNA OneCalc` should consume those declared families through `OxReplay` instead of inferring them from raw normalized event strings.
+3. When showing comparison results derived from the normalized replay view, `DNA OneCalc` must label them as `lossy` in comparison-reliability badges.
+4. For richer comparison fidelity, `DNA OneCalc` should consult the source observation bundle and its provenance sidecars rather than relying solely on the normalized view.
+5. The long-term direction is for the normalized view to gain fidelity. The current `lossy` label reflects the present floor, not a permanent design choice.
 
 ## 7. Platform Scope: Windows-Only Live Capture
 1. Live Excel observation and capture through `OxXlPlay` is Windows-only.
@@ -124,9 +171,10 @@ The `OxReplay`-facing normalized replay view at `views/normalized-replay.json` i
 
 ## 9. Current Gaps And Honest Limits
 1. Only one observation family (`xlplay_capture_values_formulae_001`) has been exercised live with retained evidence.
-2. The comparison envelope is narrow: cell value and formula text for a single workbook.
-3. No formatting, conditional-formatting, display-state, or error-surface observations exist yet.
-4. The `OxCalc` comparison leg of `W007` remains open. Broad differential comparison against DNA lane outputs is not yet exercised.
-5. The normalized replay view is explicitly lossy.
-6. Adapter-manifest expectations between `OxXlPlay` and `OxReplay` still have open clarification items.
-7. The `richer OxXlPlay diff or equality envelope` noted in the `DNA OneCalc` spec (Section 17.2) remains provisional scope, not current capability.
+2. The first SpreadsheetML family (`xlplay_capture_spreadsheetml_formatting_001`) has now also been exercised live with retained evidence.
+3. The widened SpreadsheetML formatting and conditional-formatting surfaces are currently `derived`, not `direct`, because Excel XML import on the exercised host does not preserve all source identifiers through COM.
+4. `conditional_formatting_effective_style` is currently scoped to the admitted SpreadsheetML expression-rule subset.
+5. The `OxCalc` comparison leg of `W007` remains open. Broad differential comparison against DNA lane outputs is not yet exercised.
+6. The normalized replay view is explicitly lossy.
+7. Adapter-manifest expectations between `OxXlPlay` and `OxReplay` still have open clarification items.
+8. The `richer OxXlPlay diff or equality envelope` noted in the `DNA OneCalc` spec (Section 17.2) remains provisional scope, not current capability.

@@ -47,3 +47,8 @@ It exists to provide reusable mechanics for:
 1. `OxXlPlay` is the primary Excel-driving subsystem for the program.
 2. If a replay workflow later needs live Excel re-execution, `OxReplay` may coordinate or request it, but the actual Excel-driving path should remain in `OxXlPlay`.
 3. Artifact replay inside `OxReplay` and live Excel re-execution through `OxXlPlay` are related but distinct operations and must not be collapsed into one ownership surface.
+
+## 9. SpreadsheetML source-projection rule
+1. For SpreadsheetML-backed observation families, OxXlPlay may retain source-workbook-derived formatting and conditional-formatting payloads when Excel XML import does not preserve those identifiers directly through COM.
+2. Any such payload must remain explicitly labeled `derived` and must keep its source-projection and interpretation-limit qualifiers explicit.
+3. This rule does not permit OxXlPlay to claim semantic authority over formatting or conditional-formatting behavior beyond the retained direct Excel evidence and clearly marked derived projection scope.

@@ -111,3 +111,15 @@ The retained W005 baseline uses canonical JSON fixtures for differential witness
 3. The first retained canonical manifest is `states/excel/xlplay_capture_values_formulae_001/oxreplay-manifest.json`.
 4. The first retained normalized replay view is `states/excel/xlplay_capture_values_formulae_001/views/normalized-replay.json`.
 5. If the replay-facing view is only a partial or lossy projection, the canonical manifest must state that explicitly and the richer observation sidecars must remain retained.
+
+## 9. W008 replay-adjacent view expansion
+1. The first SpreadsheetML family widens the retained replay-adjacent artifact set under `states/excel/xlplay_capture_spreadsheetml_formatting_001/views/`.
+2. Current widened view families are:
+   - `visible_value`
+   - `effective_display_text`
+   - `formatting_view`
+   - `conditional_formatting_view`
+3. `views/normalized-replay.json` now also carries machine-readable `comparison_views` entries shaped as `{ "view_family": <id>, "value": <json> }` so `OxReplay` can ingest comparison-ready XML verification facts directly.
+4. `views/normalized-replay.json` also carries `source_metadata` preserving projection status, capture-loss summary, interpretation limits, workbook/source identity, and unavailable-surface disclosure for the replay-facing seam.
+5. These widened view files and replay-facing metadata are emitted alongside the richer source observation bundle; they do not replace it.
+6. The widened view families may carry `derived` surfaces and must therefore remain subject to the source bundle's direct-versus-derived and capture-loss labeling.

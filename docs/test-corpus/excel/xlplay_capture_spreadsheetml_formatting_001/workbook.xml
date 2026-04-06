@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:x="urn:schemas-microsoft-com:office:excel">
+  <ExcelWorkbook>
+    <Date1904>0</Date1904>
+  </ExcelWorkbook>
+  <Styles>
+    <Style ss:ID="calcBase">
+      <NumberFormat ss:Format="$#,##0.00"/>
+      <Font ss:Color="#112233"/>
+      <Interior ss:Color="#445566" ss:Pattern="Solid"/>
+    </Style>
+    <Style ss:ID="calc" ss:Parent="calcBase"/>
+  </Styles>
+  <Worksheet ss:Name="Input">
+    <Table>
+      <Row>
+        <Cell ss:StyleID="calc" ss:Formula="=SUM(1,2,3)"><Data ss:Type="Number">0</Data></Cell>
+      </Row>
+    </Table>
+    <ConditionalFormatting ss:Range="A1">
+      <Condition ss:Type="Expression" ss:Formula="=A1&gt;0"/>
+      <Font ss:Color="#FF0000"/>
+      <Interior ss:Color="#00FF00" ss:Pattern="Solid"/>
+    </ConditionalFormatting>
+  </Worksheet>
+</Workbook>

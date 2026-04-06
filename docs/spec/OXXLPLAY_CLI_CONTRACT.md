@@ -22,3 +22,14 @@ This document defines the initial command families for the OxXlPlay CLI.
    - `views/normalized-replay.json`
 6. These replay-facing files are emitted as canonical shared-runtime intake artifacts over the richer `OxXlPlay` observation bundle rather than replacing it.
 7. Other command families remain scaffolded until later worksets advance them beyond planning.
+
+## 4. W008 widened capture-run behavior
+1. `capture-run` now honors `requested_observation_scope.oxxlplay_required_surfaces` when that consumer-side hint is present in the scenario payload.
+2. The first widened consumer path is the SpreadsheetML 2003 XML-backed verification scenario family used by `DNA OneCalc`.
+3. `views/normalized-replay.json` may now carry machine-readable `comparison_views` and replay-facing `source_metadata` when the declared observation surfaces are sufficient to populate them honestly.
+4. The current widened output family may additionally emit:
+   - `views/visible-value.json`
+   - `views/effective-display-text.json`
+   - `views/formatting-view.json`
+   - `views/conditional-formatting-view.json`
+5. These widened replay-facing artifacts remain support projections and must not be mistaken for a complete semantic-equivalence contract on their own.

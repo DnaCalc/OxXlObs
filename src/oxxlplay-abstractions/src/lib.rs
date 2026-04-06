@@ -18,6 +18,7 @@ pub enum ReplayClass {
     ScenarioManifestValid,
     ScenarioManifestInvalid,
     CaptureSurfaceBasic,
+    CaptureSurfaceSpreadsheetmlFormatting,
     CaptureLossMarked,
     ProvenanceMinimal,
     BundleSeedBasic,
@@ -38,6 +39,13 @@ pub enum ObservableSurfaceKind {
     WorkbookIdentity,
     CellValue,
     FormulaText,
+    EffectiveDisplayText,
+    NumberFormatCode,
+    StyleId,
+    FontColor,
+    FillColor,
+    ConditionalFormattingRules,
+    ConditionalFormattingEffectiveStyle,
     DefinedNameValue,
     ErrorValue,
 }
@@ -58,6 +66,9 @@ pub enum InterpretationLimitKind {
     WorkbookFingerprintPartial,
     TransportOpaque,
     ValueRenderingNormalized,
+    EffectiveDisplayHostRendered,
+    SpreadsheetMlSourceProjection,
+    ConditionalFormattingRuleProjection,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

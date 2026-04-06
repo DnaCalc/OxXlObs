@@ -331,8 +331,9 @@ mod tests {
     };
     use oxxlplay_bridge::BridgeInvocationMode;
 
-    const BUNDLE_FIXTURE: &str =
-        include_str!("../../../docs/test-corpus/bundles/xlplay_bundle_seed_handoff_001/bundle.json");
+    const BUNDLE_FIXTURE: &str = include_str!(
+        "../../../docs/test-corpus/bundles/xlplay_bundle_seed_handoff_001/bundle.json"
+    );
     const HANDOFF_FIXTURE: &str = include_str!(
         "../../../docs/test-corpus/bundles/xlplay_bundle_seed_handoff_001/handoff-validation.json"
     );
