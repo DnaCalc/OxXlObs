@@ -16,12 +16,13 @@ This document defines the initial command families for the OxXlPlay CLI.
 2. Initial invocation contract:
    - `dna-xl-play capture-run --scenario <scenario-json-path> [--output-dir <repo-relative-output-dir>]`
 3. `capture-run` invokes the declared repo-local PowerShell bridge at `scripts/invoke-excel-observation.ps1`.
-4. The initial stable output family emits `capture.json`, `provenance.json`, `bridge.json`, `environment.json`, `driver-run.json`, and `bundle.json`.
-5. The current `W007` alignment pass also emits:
+4. When a scenario declares `workbook_kind = programmatic-formula`, the bridge still resolves `workbook_ref` for provenance and fingerprinting, but it creates the observed workbook through Excel COM and writes `entered_cell_text` into `Sheet1!A1` directly rather than opening the file-backed workbook as the execution surface.
+5. The initial stable output family emits `capture.json`, `provenance.json`, `bridge.json`, `environment.json`, `driver-run.json`, and `bundle.json`.
+6. The current `W007` alignment pass also emits:
    - `oxreplay-manifest.json`
    - `views/normalized-replay.json`
-6. These replay-facing files are emitted as canonical shared-runtime intake artifacts over the richer `OxXlPlay` observation bundle rather than replacing it.
-7. Other command families remain scaffolded until later worksets advance them beyond planning.
+7. These replay-facing files are emitted as canonical shared-runtime intake artifacts over the richer `OxXlPlay` observation bundle rather than replacing it.
+8. Other command families remain scaffolded until later worksets advance them beyond planning.
 
 ## 4. W008 widened capture-run behavior
 1. `capture-run` now honors `requested_observation_scope.oxxlplay_required_surfaces` when that consumer-side hint is present in the scenario payload.

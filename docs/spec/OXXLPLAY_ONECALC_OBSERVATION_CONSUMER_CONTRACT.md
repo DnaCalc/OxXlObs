@@ -55,7 +55,7 @@ The first retained comparison-ready observation families are:
 | Bridge | `external_process` / `w006-powershell-com.v1` |
 
 ### 3.4 What The SpreadsheetML Family Provides
-1. Direct `cell_value` from `Range.Value2`.
+1. Direct `cell_value` from `Range.Value2` for ordinary values, including zero-length strings, with host-rendered `Range.Text` used as the retained representation when Excel returns an error-valued cell through COM as an HRESULT integer.
 2. Direct `formula_text` where accessible through the COM bridge.
 3. Direct `effective_display_text` from host-rendered Excel `Range.Text`.
 4. Derived SpreadsheetML-source-backed `number_format_code`, `style_id`, `font_color`, `fill_color`, and `conditional_formatting_rules` payloads when Excel XML import does not preserve those source identifiers directly through COM on the exercised host.
@@ -117,7 +117,7 @@ The following surface kinds are not yet observed or retained by the current fami
 
 | Surface kind | Status | Comparison eligibility | Notes |
 |---|---|---|---|
-| Cell value | `direct` | Eligible for direct value comparison | Captured from `Range.Value2` |
+| Cell value | `direct` | Eligible for direct value comparison | Captured from `Range.Value2` for ordinary values, including zero-length strings; error-valued cells retain Excel display tokens such as `#DIV/0!` rather than COM HRESULT integers |
 | Formula text | `direct` | Eligible for direct formula-text comparison | Captured from COM |
 | Effective display text | `direct` | Eligible for direct display comparison with host-rendered qualifier | Captured from `Range.Text` |
 | Number format code | `derived` | Eligible with `derived` label | Source-backed SpreadsheetML projection |

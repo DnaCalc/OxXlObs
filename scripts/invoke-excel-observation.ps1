@@ -173,6 +173,71 @@ function Ensure-BootstrapWorkbook {
     }
 }
 
+function Set-ProgrammaticCellContents {
+    param(
+        [Parameter(Mandatory = $true)]
+        $Cell,
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyString()]
+        [string]$EnteredCellText
+    )
+
+    if ($EnteredCellText.StartsWith("=")) {
+        $Cell.Formula2 = $EnteredCellText
+        return
+    }
+
+    if ($EnteredCellText.StartsWith("'")) {
+        $Cell.Value2 = $EnteredCellText.Substring(1)
+        return
+    }
+
+    $numberStyles = [System.Globalization.NumberStyles]::Float -bor [System.Globalization.NumberStyles]::AllowThousands
+    $numberValue = 0.0
+    if ([double]::TryParse($EnteredCellText, $numberStyles, [System.Globalization.CultureInfo]::InvariantCulture, [ref]$numberValue)) {
+        $Cell.Value2 = $numberValue
+        return
+    }
+
+    if ($EnteredCellText.Equals("TRUE", [System.StringComparison]::OrdinalIgnoreCase)) {
+        $Cell.Value2 = $true
+        return
+    }
+
+    if ($EnteredCellText.Equals("FALSE", [System.StringComparison]::OrdinalIgnoreCase)) {
+        $Cell.Value2 = $false
+        return
+    }
+
+    $Cell.Value2 = $EnteredCellText
+}
+
+function New-ProgrammaticFormulaWorkbook {
+    param(
+        [Parameter(Mandatory = $true)]
+        $Excel,
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyString()]
+        [string]$EnteredCellText
+    )
+
+    $workbook = $Excel.Workbooks.Add()
+    $worksheet = $null
+    $cell = $null
+
+    try {
+        $worksheet = $workbook.Worksheets.Item(1)
+        $worksheet.Name = "Sheet1"
+        $cell = $worksheet.Range("A1")
+        Set-ProgrammaticCellContents -Cell $cell -EnteredCellText $EnteredCellText
+        return $workbook
+    }
+    finally {
+        Release-ComObject -ComObject $cell
+        Release-ComObject -ComObject $worksheet
+    }
+}
+
 function Resolve-WorkbookPath {
     param(
         [Parameter(Mandatory = $true)]
@@ -231,7 +296,10 @@ function Get-WorkbookMediaType {
 }
 
 function Convert-CellValueToString {
-    param($Value)
+    param(
+        $Value,
+        $Range = $null
+    )
 
     if ($null -eq $Value) {
         return $null
@@ -242,14 +310,52 @@ function Convert-CellValueToString {
     }
 
     if ($Value -is [bool]) {
-        return $Value.ToString().ToLowerInvariant()
+        return $Value.ToString().ToUpperInvariant()
     }
 
     if ($Value -is [datetime]) {
         return $Value.ToUniversalTime().ToString("o")
     }
 
+    $excelErrorMap = @{
+        -2146826288 = '#NULL!'
+        -2146826281 = '#DIV/0!'
+        -2146826273 = '#VALUE!'
+        -2146826265 = '#REF!'
+        -2146826259 = '#NAME?'
+        -2146826252 = '#NUM!'
+        -2146826246 = '#N/A'
+        -2146826245 = '#GETTING_DATA'
+        -2146826244 = '#SPILL!'
+    }
+
+    $intValue = $null
+    try {
+        $intValue = [int]$Value
+    }
+    catch {
+        $intValue = $null
+    }
+
+    if ($null -ne $intValue -and $excelErrorMap.ContainsKey($intValue)) {
+        # Excel COM exposes error-valued cells as HRESULT integers through Value2.
+        if ($null -ne $Range) {
+            $displayText = [string]$Range.Text
+            if (-not [string]::IsNullOrWhiteSpace($displayText)) {
+                return $displayText
+            }
+        }
+
+        return $excelErrorMap[$intValue]
+    }
+
     return [string]$Value
+}
+
+function Test-ObservedValuePresent {
+    param($Value)
+
+    return $null -ne $Value
 }
 
 function Convert-ExcelColorToHex {
@@ -935,8 +1041,8 @@ function New-ObservedSurfaceRecord {
         "cell_value" {
             $range = Resolve-SurfaceRange -Workbook $Workbook -Locator $Surface.locator
             try {
-                $value = Convert-CellValueToString $range.Value2
-                if (-not [string]::IsNullOrWhiteSpace($value)) {
+                $value = Convert-CellValueToString -Value $range.Value2 -Range $range
+                if (Test-ObservedValuePresent -Value $value) {
                     $status = "direct"
                     $valueRepr = $value
                     $captureLoss = "none"
@@ -1560,9 +1666,26 @@ try {
     }
 
     $resolvedWorkbookPath = Resolve-WorkbookPath -Scenario $scenario -ScenarioPath $resolvedScenarioPath -RepoRoot $repoRoot
-    Ensure-BootstrapWorkbook -Excel $excel -Scenario $scenario -WorkbookPath $resolvedWorkbookPath
+    $workbookKindProperty = $scenario.PSObject.Properties["workbook_kind"]
+    $workbookKind = if ($null -ne $workbookKindProperty -and -not [string]::IsNullOrWhiteSpace([string]$workbookKindProperty.Value)) {
+        [string]$workbookKindProperty.Value
+    }
+    else {
+        $null
+    }
 
-    $workbook = $excel.Workbooks.Open($resolvedWorkbookPath, 0, $true)
+    if ($workbookKind -eq "programmatic-formula") {
+        $enteredCellTextProperty = $scenario.PSObject.Properties["entered_cell_text"]
+        if ($null -eq $enteredCellTextProperty) {
+            throw "Scenario workbook_kind `programmatic-formula` requires entered_cell_text."
+        }
+
+        $workbook = New-ProgrammaticFormulaWorkbook -Excel $excel -EnteredCellText ([string]$enteredCellTextProperty.Value)
+    }
+    else {
+        Ensure-BootstrapWorkbook -Excel $excel -Scenario $scenario -WorkbookPath $resolvedWorkbookPath
+        $workbook = $excel.Workbooks.Open($resolvedWorkbookPath, 0, $true)
+    }
 
     try {
         $excel.CalculateFullRebuild()
@@ -1583,7 +1706,12 @@ try {
     foreach ($observableSurface in $scenario.observable_surfaces) {
         $locatorKey = [string]$observableSurface.locator
         if (-not $spreadsheetMlContextByLocator.ContainsKey($locatorKey)) {
-            $spreadsheetMlContextByLocator[$locatorKey] = Get-SpreadsheetMlContext -WorkbookPath $resolvedWorkbookPath -Locator $locatorKey
+            $spreadsheetMlContextByLocator[$locatorKey] = if ($workbookKind -eq "programmatic-formula") {
+                $null
+            }
+            else {
+                Get-SpreadsheetMlContext -WorkbookPath $resolvedWorkbookPath -Locator $locatorKey
+            }
         }
     }
     $observedSurfaces = @($scenario.observable_surfaces | ForEach-Object {
