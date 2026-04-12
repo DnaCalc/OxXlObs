@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $true)]
     [string]$ScenarioPath,
+    [string]$BatchManifestPath,
     [string]$OutputDir = ".tmp/oxxlplay-w006",
     [switch]$EmitBundle = $true
 )
@@ -57,6 +57,64 @@ function Write-JsonFile {
 
     $json = $Value | ConvertTo-Json -Depth 20
     Set-Content -Path $Path -Value $json -Encoding utf8
+}
+
+function Read-BatchManifest {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$BatchManifestPath
+    )
+
+    if (-not (Test-Path -LiteralPath $BatchManifestPath)) {
+        throw "Batch manifest path `$BatchManifestPath` does not exist."
+    }
+
+    $manifest = Get-Content -Raw -LiteralPath $BatchManifestPath | ConvertFrom-Json -Depth 20
+
+    if ([string]::IsNullOrWhiteSpace([string]$manifest.batch_id)) {
+        throw "Batch manifest must declare a non-blank batch_id."
+    }
+
+    if ([string]::IsNullOrWhiteSpace([string]$manifest.output_root)) {
+        throw "Batch manifest must declare a non-blank output_root."
+    }
+
+    if ($null -eq $manifest.cases -or @($manifest.cases).Count -eq 0) {
+        throw "Batch manifest must declare at least one case."
+    }
+
+    return $manifest
+}
+
+function Resolve-BatchOutputRoot {
+    param(
+        [Parameter(Mandatory = $true)]
+        $BatchManifest,
+        [Parameter(Mandatory = $true)]
+        [string]$RepoRoot,
+        [string]$OutputDirOverride
+    )
+
+    if (-not [string]::IsNullOrWhiteSpace($OutputDirOverride)) {
+        return Resolve-FullPath -BasePath $RepoRoot -CandidatePath $OutputDirOverride
+    }
+
+    return Resolve-FullPath -BasePath $RepoRoot -CandidatePath ([string]$BatchManifest.output_root)
+}
+
+function Resolve-BatchCaseOutputPath {
+    param(
+        [Parameter(Mandatory = $true)]
+        $BatchCase,
+        [Parameter(Mandatory = $true)]
+        [string]$RepoRoot
+    )
+
+    if ([string]::IsNullOrWhiteSpace([string]$BatchCase.case_output_dir)) {
+        throw "Batch case `$([string]$BatchCase.case_id)` must declare case_output_dir."
+    }
+
+    return Resolve-FullPath -BasePath $RepoRoot -CandidatePath ([string]$BatchCase.case_output_dir)
 }
 
 function Release-ComObject {
@@ -1636,7 +1694,641 @@ function Convert-ToReplayNormalizedFamily {
     }
 }
 
+function New-ExcelWorker {
+    $excel = New-Object -ComObject Excel.Application
+    $excel.Visible = $false
+    $excel.DisplayAlerts = $false
+    $excel.AskToUpdateLinks = $false
+
+    $macroMode = "force_disable_requested"
+    try {
+        $excel.AutomationSecurity = 3
+    }
+    catch {
+        $macroMode = "automation_security_unavailable"
+    }
+
+    return [ordered]@{
+        excel = $excel
+        macro_mode = $macroMode
+    }
+}
+
+function Close-WorkbookSafely {
+    param($Workbook)
+
+    if ($null -ne $Workbook) {
+        try {
+            $Workbook.Close($false)
+        }
+        catch {
+        }
+    }
+
+    Release-ComObject -ComObject $Workbook
+}
+
+function Get-ScenarioWorkbookKind {
+    param(
+        [Parameter(Mandatory = $true)]
+        $Scenario
+    )
+
+    $workbookKindProperty = $Scenario.PSObject.Properties["workbook_kind"]
+    if ($null -ne $workbookKindProperty -and -not [string]::IsNullOrWhiteSpace([string]$workbookKindProperty.Value)) {
+        return [string]$workbookKindProperty.Value
+    }
+
+    return $null
+}
+
+function Resolve-BatchWorkbookPath {
+    param(
+        [Parameter(Mandatory = $true)]
+        $BatchCase,
+        [Parameter(Mandatory = $true)]
+        [string]$BatchManifestPath,
+        [Parameter(Mandatory = $true)]
+        [string]$RepoRoot
+    )
+
+    $workbookRef = [string]$BatchCase.workbook_ref
+    if ([string]::IsNullOrWhiteSpace($workbookRef)) {
+        throw "Batch case `$([string]$BatchCase.case_id)` workbook_ref must not be blank."
+    }
+
+    if ($workbookRef.StartsWith(".\") -or $workbookRef.StartsWith("./")) {
+        $manifestDir = Split-Path -Parent $BatchManifestPath
+        return Resolve-FullPath -BasePath $manifestDir -CandidatePath $workbookRef
+    }
+
+    return Resolve-FullPath -BasePath $RepoRoot -CandidatePath $workbookRef
+}
+
+function New-BatchCaseScenario {
+    param(
+        [Parameter(Mandatory = $true)]
+        $BatchCase
+    )
+
+    $scenario = [ordered]@{
+        scenario_id = [string]$BatchCase.case_id
+        replay_class = "capture_surface_basic"
+        retained_root = [string]$BatchCase.case_output_dir
+        workbook_ref = [string]$BatchCase.workbook_ref
+        trigger = [string]$BatchCase.trigger
+        observable_surfaces = @($BatchCase.observable_surfaces)
+    }
+
+    $workbookKind = Get-ScenarioWorkbookKind -Scenario $BatchCase
+    if (-not [string]::IsNullOrWhiteSpace($workbookKind)) {
+        $scenario.workbook_kind = $workbookKind
+    }
+
+    $enteredCellTextProperty = $BatchCase.PSObject.Properties["entered_cell_text"]
+    if ($null -ne $enteredCellTextProperty) {
+        $scenario.entered_cell_text = $enteredCellTextProperty.Value
+    }
+
+    $requestedObservationScopeProperty = $BatchCase.PSObject.Properties["requested_observation_scope"]
+    if ($null -ne $requestedObservationScopeProperty -and $null -ne $requestedObservationScopeProperty.Value) {
+        $scenario.requested_observation_scope = $requestedObservationScopeProperty.Value
+    }
+
+    return [pscustomobject]$scenario
+}
+
+function Get-WorkbookFingerprintValue {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$WorkbookPath,
+        [Parameter(Mandatory = $true)]
+        [string]$WorkbookKind
+    )
+
+    if (Test-Path -LiteralPath $WorkbookPath) {
+        return "sha256:{0}" -f (Get-FileHash -LiteralPath $WorkbookPath -Algorithm SHA256).Hash.ToLowerInvariant()
+    }
+
+    return "partial:{0}:workbook_ref_unavailable" -f $WorkbookKind
+}
+
+function Invoke-CaptureCaseArtifacts {
+    param(
+        [Parameter(Mandatory = $true)]
+        $Scenario,
+        [Parameter(Mandatory = $true)]
+        $Excel,
+        [Parameter(Mandatory = $true)]
+        $Workbook,
+        [Parameter(Mandatory = $true)]
+        [string]$ResolvedWorkbookPath,
+        [Parameter(Mandatory = $true)]
+        [string]$ResolvedOutputDir,
+        [Parameter(Mandatory = $true)]
+        [string]$RepoRoot,
+        [Parameter(Mandatory = $true)]
+        [string]$MacroMode,
+        [Parameter(Mandatory = $true)]
+        [bool]$EmitBundleArtifacts,
+        [string]$ScenarioSourcePath
+    )
+
+    New-Item -ItemType Directory -Path $ResolvedOutputDir -Force | Out-Null
+
+    try {
+        $Excel.CalculateFullRebuild()
+    }
+    catch {
+        $Excel.Calculate()
+    }
+
+    $capturedAtUtc = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+    $timezone = (Get-TimeZone).Id
+    $workbookKind = Get-ScenarioWorkbookKind -Scenario $Scenario
+    if ([string]::IsNullOrWhiteSpace($workbookKind)) {
+        $workbookKind = "file-backed"
+    }
+    $workbookFingerprint = Get-WorkbookFingerprintValue -WorkbookPath $ResolvedWorkbookPath -WorkbookKind $workbookKind
+    $bridgeVersion = "w006-powershell-com.v1"
+    $commandChannel = "json-file"
+    $workbookRepoPath = Convert-ToRepoRelativePath -PathValue $ResolvedWorkbookPath -RepoRoot $RepoRoot
+    $outputRepoPath = Convert-ToRepoRelativePath -PathValue $ResolvedOutputDir -RepoRoot $RepoRoot
+    $declaredSurfaceIds = @($Scenario.observable_surfaces | ForEach-Object { [string]$_.surface_id })
+    $spreadsheetMlContextByLocator = @{}
+    foreach ($observableSurface in $Scenario.observable_surfaces) {
+        $locatorKey = [string]$observableSurface.locator
+        if (-not $spreadsheetMlContextByLocator.ContainsKey($locatorKey)) {
+            $spreadsheetMlContextByLocator[$locatorKey] = if ($workbookKind -eq "programmatic-formula") {
+                $null
+            }
+            else {
+                Get-SpreadsheetMlContext -WorkbookPath $ResolvedWorkbookPath -Locator $locatorKey
+            }
+        }
+    }
+    $observedSurfaces = @($Scenario.observable_surfaces | ForEach-Object {
+        New-ObservedSurfaceRecord -Workbook $Workbook -Surface $_ -SpreadsheetMlContext $spreadsheetMlContextByLocator[[string]$_.locator]
+    })
+    $captureLossSummary = @(
+        $observedSurfaces |
+        Where-Object { $_.capture_loss -ne "none" } |
+        ForEach-Object { $_.capture_loss } |
+        Select-Object -Unique
+    )
+    $uncertaintySummary = @(
+        $observedSurfaces |
+        Where-Object { $_.uncertainty -ne "none" } |
+        ForEach-Object { $_.uncertainty } |
+        Select-Object -Unique
+    )
+    if ($workbookFingerprint.StartsWith("partial:")) {
+        $captureLossSummary += "environment_partial"
+        $captureLossSummary = @($captureLossSummary | Select-Object -Unique)
+    }
+    $interpretationLimits = @()
+    if (@($observedSurfaces | Where-Object { $_.surface.surface_kind -eq "effective_display_text" }).Count -gt 0) {
+        $interpretationLimits += New-InterpretationLimit `
+            -Kind "effective_display_host_rendered" `
+            -Detail "effective_display_text reflects host-rendered Excel text on the observation machine."
+    }
+    if (@($spreadsheetMlContextByLocator.Values | Where-Object { $null -ne $_ }).Count -gt 0) {
+        $interpretationLimits += New-InterpretationLimit `
+            -Kind "spreadsheet_ml_source_projection" `
+            -Detail "SpreadsheetML 2003 style, format, and conditional-formatting rule surfaces are retained from the source workbook as derived observation artifacts when Excel import does not preserve those identifiers directly."
+        $interpretationLimits += New-InterpretationLimit `
+            -Kind "conditional_formatting_rule_projection" `
+            -Detail "conditional_formatting_effective_style is derived for SpreadsheetML expression rules by combining source-declared rule payloads with Excel formula evaluation on the target cell."
+    }
+    if ($workbookFingerprint.StartsWith("partial:")) {
+        $interpretationLimits += New-InterpretationLimit `
+            -Kind "workbook_fingerprint_partial" `
+            -Detail "workbook_ref could not be hashed on disk for this case; provenance retains a partial workbook fingerprint marker."
+    }
+
+    $bridge = [ordered]@{
+        scenario_id = [string]$Scenario.scenario_id
+        bridge_kind = "external_process"
+        bridge_version = $bridgeVersion
+        executable_identity = "pwsh:scripts/invoke-excel-observation.ps1"
+        command_channel = $commandChannel
+        invocation_mode = "com_automation"
+        interpretation_limits = @($interpretationLimits)
+    }
+
+    $capture = [ordered]@{
+        surfaces = $observedSurfaces
+        interpretation = [ordered]@{
+            bridge_influenced = @($interpretationLimits).Count -gt 0
+            interpretation_limits = @($interpretationLimits)
+        }
+    }
+
+    $provenance = [ordered]@{
+        scenario_id = [string]$Scenario.scenario_id
+        run_id = "run_{0}_{1}" -f [string]$Scenario.scenario_id, (Get-Date -Format "yyyyMMdd_HHmmss")
+        workbook_ref = $workbookRepoPath
+        workbook_fingerprint = $workbookFingerprint
+        excel_version = [string]$Excel.Version
+        excel_build = [string]$Excel.Build
+        excel_channel = Get-ExcelChannel
+        host_os = Get-HostOs
+        host_architecture = Get-HostArchitecture
+        macro_mode = $MacroMode
+        automation_policy = "clean_room_declared"
+        captured_at_utc = $capturedAtUtc
+        timezone = $timezone
+        declared_surface_ids = $declaredSurfaceIds
+        capture_loss_summary = $captureLossSummary
+        uncertainty_summary = $uncertaintySummary
+        bridge = $bridge
+    }
+
+    $environment = [ordered]@{
+        scenario_id = [string]$Scenario.scenario_id
+        excel = [ordered]@{
+            version = [string]$Excel.Version
+            build = [string]$Excel.Build
+            channel = $provenance.excel_channel
+        }
+        host = [ordered]@{
+            os = $provenance.host_os
+            architecture = $provenance.host_architecture
+        }
+        bridge = [ordered]@{
+            kind = $bridge.bridge_kind
+            version = $bridge.bridge_version
+            command_channel = $bridge.command_channel
+            invocation_mode = $bridge.invocation_mode
+        }
+        macro_mode = $MacroMode
+        automation_policy = "clean_room_declared"
+        captured_at_utc = $capturedAtUtc
+        timezone = $timezone
+        workbook = [ordered]@{
+            ref = $workbookRepoPath
+            fingerprint = $workbookFingerprint
+        }
+    }
+
+    $bundle = $null
+    if ($EmitBundleArtifacts) {
+        $sidecars = @(
+            [ordered]@{
+                kind = "environment_fingerprint"
+                path = "{0}/environment.json" -f $outputRepoPath
+                media_type = "application/json"
+            },
+            [ordered]@{
+                kind = "bridge_envelope"
+                path = "{0}/bridge.json" -f $outputRepoPath
+                media_type = "application/json"
+            }
+        )
+        if (Test-Path -LiteralPath $ResolvedWorkbookPath) {
+            $sidecars += [ordered]@{
+                kind = "captured_workbook"
+                path = $workbookRepoPath
+                media_type = Get-WorkbookMediaType -WorkbookPath $ResolvedWorkbookPath
+            }
+        }
+
+        $bundle = [ordered]@{
+            bundle_schema = "oxxlplay.replay_bundle_seed.v1"
+            scenario = $Scenario
+            provenance = $provenance
+            capture = $capture
+            sidecars = @($sidecars)
+            handoff = [ordered]@{
+                intended_replay_consumers = @("OxReplay")
+                intended_diff_consumers = @("OxCalc", "DnaOneCalc")
+                capability_hints = @("O3.bundle_seed_valid", "O5.stable_driver_valid", "O6.spreadsheetml_observation_valid")
+                pack_hints = @(
+                    "PACK.replay.appliance",
+                    "PACK.diff.cross_engine.continuous",
+                    "PACK.trace.forensic_plane"
+                )
+            }
+        }
+    }
+
+    $visibleValueSurfaces = @($observedSurfaces | Where-Object { $_.surface.surface_kind -eq "cell_value" })
+    $effectiveDisplaySurfaces = @($observedSurfaces | Where-Object { $_.surface.surface_kind -eq "effective_display_text" })
+    $formattingSurfaces = @(
+        $observedSurfaces |
+        Where-Object {
+            $_.surface.surface_kind -in @("number_format_code", "style_id", "font_color", "fill_color")
+        }
+    )
+    $conditionalFormattingSurfaces = @(
+        $observedSurfaces |
+        Where-Object {
+            $_.surface.surface_kind -in @("conditional_formatting_rules", "conditional_formatting_effective_style")
+        }
+    )
+    $comparisonViews = @(New-ReplayComparisonViews -ObservedSurfaces $observedSurfaces)
+
+    $normalizedReplay = [ordered]@{
+        scenario_id = [string]$Scenario.scenario_id
+        lane_id = "oxxlplay"
+        events = @(
+            $observedSurfaces | ForEach-Object {
+                [ordered]@{
+                    event_id = [string]$_.surface.surface_id
+                    source_label = "{0}:{1}:{2}" -f [string]$_.surface.surface_kind, [string]$_.surface.locator, [string]$_.status
+                    normalized_family = Convert-ToReplayNormalizedFamily -ObservedSurface $_
+                }
+            }
+        )
+        registry_refs = @()
+        comparison_views = @($comparisonViews)
+        source_metadata = New-ReplaySourceMetadata `
+            -Scenario $Scenario `
+            -Provenance $provenance `
+            -ObservedSurfaces $observedSurfaces `
+            -ComparisonViews $comparisonViews `
+            -CaptureLossSummary $captureLossSummary
+    }
+
+    $viewArtifacts = @(
+        [ordered]@{
+            artifact_family = "normalized_replay"
+            path = "views/normalized-replay.json"
+            value = $normalizedReplay
+        }
+    )
+    if ($visibleValueSurfaces.Count -gt 0) {
+        $viewArtifacts += [ordered]@{
+            artifact_family = "visible_value"
+            path = "views/visible-value.json"
+            value = New-CaptureView -ScenarioId ([string]$Scenario.scenario_id) -ViewFamily "visible_value" -ObservedSurfaces $visibleValueSurfaces
+        }
+    }
+    if ($effectiveDisplaySurfaces.Count -gt 0) {
+        $viewArtifacts += [ordered]@{
+            artifact_family = "effective_display_text"
+            path = "views/effective-display-text.json"
+            value = New-CaptureView -ScenarioId ([string]$Scenario.scenario_id) -ViewFamily "effective_display_text" -ObservedSurfaces $effectiveDisplaySurfaces
+        }
+    }
+    if ($formattingSurfaces.Count -gt 0) {
+        $viewArtifacts += [ordered]@{
+            artifact_family = "formatting_view"
+            path = "views/formatting-view.json"
+            value = New-CaptureView -ScenarioId ([string]$Scenario.scenario_id) -ViewFamily "formatting_view" -ObservedSurfaces $formattingSurfaces
+        }
+    }
+    if ($conditionalFormattingSurfaces.Count -gt 0) {
+        $viewArtifacts += [ordered]@{
+            artifact_family = "conditional_formatting_view"
+            path = "views/conditional-formatting-view.json"
+            value = New-CaptureView -ScenarioId ([string]$Scenario.scenario_id) -ViewFamily "conditional_formatting_view" -ObservedSurfaces $conditionalFormattingSurfaces
+        }
+    }
+
+    $oxReplayManifest = [ordered]@{
+        bundle_id = "oxxlplay-{0}" -f [string]$Scenario.scenario_id
+        scenario_id = [string]$Scenario.scenario_id
+        bundle_schema = "replay.bundle.v1"
+        source_schema = "oxxlplay.replay_bundle_seed.v1"
+        lane_id = "oxxlplay"
+        adapter_id = "oxxlplay.observation.replay.v1"
+        capture_mode = "excel_black_box_observation"
+        registry_refs = @()
+        projection_status = "lossy"
+        capture_loss = Get-OxReplayCaptureLossStatus -CaptureLossSummary $captureLossSummary
+        sidecars = @(
+            [ordered]@{
+                artifact_family = "oxxlplay_observation_bundle_seed"
+                path = "bundle.json"
+            },
+            [ordered]@{
+                artifact_family = "observation_capture"
+                path = "capture.json"
+            },
+            [ordered]@{
+                artifact_family = "observation_provenance"
+                path = "provenance.json"
+            },
+            [ordered]@{
+                artifact_family = "environment_fingerprint"
+                path = "environment.json"
+            },
+            [ordered]@{
+                artifact_family = "bridge_envelope"
+                path = "bridge.json"
+            }
+        )
+        views = @(
+            $viewArtifacts | ForEach-Object {
+                [ordered]@{
+                    artifact_family = [string]$_.artifact_family
+                    path = [string]$_.path
+                }
+            }
+        )
+    }
+
+    Write-JsonFile -Path (Join-Path $ResolvedOutputDir "capture.json") -Value $capture
+    Write-JsonFile -Path (Join-Path $ResolvedOutputDir "provenance.json") -Value $provenance
+    Write-JsonFile -Path (Join-Path $ResolvedOutputDir "bridge.json") -Value $bridge
+    Write-JsonFile -Path (Join-Path $ResolvedOutputDir "environment.json") -Value $environment
+
+    if ($EmitBundleArtifacts -and $null -ne $bundle) {
+        Write-JsonFile -Path (Join-Path $ResolvedOutputDir "bundle.json") -Value $bundle
+        Write-JsonFile -Path (Join-Path $ResolvedOutputDir "oxreplay-manifest.json") -Value $oxReplayManifest
+        foreach ($viewArtifact in $viewArtifacts) {
+            Write-JsonFile -Path (Join-Path $ResolvedOutputDir $viewArtifact.path) -Value $viewArtifact.value
+        }
+    }
+
+    $emittedFiles = @(
+        ("{0}/capture.json" -f $outputRepoPath),
+        ("{0}/provenance.json" -f $outputRepoPath),
+        ("{0}/bridge.json" -f $outputRepoPath),
+        ("{0}/environment.json" -f $outputRepoPath)
+    )
+    if ($EmitBundleArtifacts) {
+        $emittedFiles += ("{0}/bundle.json" -f $outputRepoPath)
+        $emittedFiles += ("{0}/oxreplay-manifest.json" -f $outputRepoPath)
+        $emittedFiles += @(
+            $viewArtifacts |
+            ForEach-Object { "{0}/{1}" -f $outputRepoPath, [string]$_.path }
+        )
+    }
+
+    $driverRun = [ordered]@{
+        scenario_path = if ([string]::IsNullOrWhiteSpace($ScenarioSourcePath)) { $null } else { Convert-ToRepoRelativePath -PathValue $ScenarioSourcePath -RepoRoot $RepoRoot }
+        output_dir = $outputRepoPath
+        workbook_ref = $workbookRepoPath
+        emitted_files = $emittedFiles
+    }
+    Write-JsonFile -Path (Join-Path $ResolvedOutputDir "driver-run.json") -Value $driverRun
+
+    return [ordered]@{
+        output_dir = $outputRepoPath
+        capture_path = "{0}/capture.json" -f $outputRepoPath
+        oxreplay_manifest_path = if ($EmitBundleArtifacts) { "{0}/oxreplay-manifest.json" -f $outputRepoPath } else { $null }
+        normalized_replay_path = if ($EmitBundleArtifacts) { "{0}/views/normalized-replay.json" -f $outputRepoPath } else { $null }
+        driver_run_path = "{0}/driver-run.json" -f $outputRepoPath
+    }
+}
+
 $repoRoot = Resolve-FullPath -BasePath $PSScriptRoot -CandidatePath ".."
+
+if (-not [string]::IsNullOrWhiteSpace($BatchManifestPath)) {
+    if (-not [string]::IsNullOrWhiteSpace($ScenarioPath)) {
+        throw "Specify either ScenarioPath or BatchManifestPath, not both."
+    }
+
+    $resolvedBatchManifestPath = Resolve-FullPath -BasePath $repoRoot -CandidatePath $BatchManifestPath
+    $batchManifest = Read-BatchManifest -BatchManifestPath $resolvedBatchManifestPath
+    $resolvedBatchOutputRoot = Resolve-BatchOutputRoot `
+        -BatchManifest $batchManifest `
+        -RepoRoot $repoRoot `
+        -OutputDirOverride $(if ($PSBoundParameters.ContainsKey('OutputDir')) { $OutputDir } else { $null })
+
+    New-Item -ItemType Directory -Path $resolvedBatchOutputRoot -Force | Out-Null
+
+    $worker = $null
+    $batchIndex = @()
+    $batchStartUtc = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+    $batchOutputRootRepoPath = Convert-ToRepoRelativePath -PathValue $resolvedBatchOutputRoot -RepoRoot $repoRoot
+
+    try {
+        $worker = New-ExcelWorker
+        $batchExcel = $worker.excel
+        $batchMacroMode = [string]$worker.macro_mode
+
+        foreach ($batchCase in $batchManifest.cases) {
+            $resolvedCaseOutputDir = Resolve-BatchCaseOutputPath -BatchCase $batchCase -RepoRoot $repoRoot
+            New-Item -ItemType Directory -Path $resolvedCaseOutputDir -Force | Out-Null
+
+            $caseIndexRecord = [ordered]@{
+                case_id = [string]$batchCase.case_id
+                status = "failed"
+                error = $null
+                output_dir = Convert-ToRepoRelativePath -PathValue $resolvedCaseOutputDir -RepoRoot $repoRoot
+                capture_path = $null
+                oxreplay_manifest_path = $null
+                normalized_replay_path = $null
+            }
+
+            $caseWorkbook = $null
+            try {
+                $caseScenario = New-BatchCaseScenario -BatchCase $batchCase
+                Expand-RequestedObservableSurfaces -Scenario $caseScenario
+                $caseWorkbookKind = Get-ScenarioWorkbookKind -Scenario $caseScenario
+                $resolvedCaseWorkbookPath = Resolve-BatchWorkbookPath `
+                    -BatchCase $batchCase `
+                    -BatchManifestPath $resolvedBatchManifestPath `
+                    -RepoRoot $repoRoot
+
+                if ($caseWorkbookKind -eq "programmatic-formula") {
+                    $enteredCellTextProperty = $caseScenario.PSObject.Properties["entered_cell_text"]
+                    if ($null -eq $enteredCellTextProperty) {
+                        throw "Batch case `$([string]$batchCase.case_id)` workbook_kind `programmatic-formula` requires entered_cell_text."
+                    }
+
+                    $caseWorkbook = New-ProgrammaticFormulaWorkbook `
+                        -Excel $batchExcel `
+                        -EnteredCellText ([string]$enteredCellTextProperty.Value)
+                }
+                elseif ($caseWorkbookKind -eq "file-backed" -or $caseWorkbookKind -eq "spreadsheetml-2003-import" -or [string]::IsNullOrWhiteSpace($caseWorkbookKind)) {
+                    Ensure-BootstrapWorkbook -Excel $batchExcel -Scenario $caseScenario -WorkbookPath $resolvedCaseWorkbookPath
+                    $caseWorkbook = $batchExcel.Workbooks.Open($resolvedCaseWorkbookPath, 0, $true)
+                }
+                else {
+                    throw "Batch case `$([string]$batchCase.case_id)` workbook_kind `$caseWorkbookKind` is not supported by the current bridge."
+                }
+
+                $caseArtifacts = Invoke-CaptureCaseArtifacts `
+                    -Scenario $caseScenario `
+                    -Excel $batchExcel `
+                    -Workbook $caseWorkbook `
+                    -ResolvedWorkbookPath $resolvedCaseWorkbookPath `
+                    -ResolvedOutputDir $resolvedCaseOutputDir `
+                    -RepoRoot $repoRoot `
+                    -MacroMode $batchMacroMode `
+                    -EmitBundleArtifacts ([bool]$EmitBundle) `
+                    -ScenarioSourcePath $null
+
+                $caseIndexRecord.status = "succeeded"
+                $caseIndexRecord.capture_path = [string]$caseArtifacts.capture_path
+                $caseIndexRecord.oxreplay_manifest_path = [string]$caseArtifacts.oxreplay_manifest_path
+                $caseIndexRecord.normalized_replay_path = [string]$caseArtifacts.normalized_replay_path
+            }
+            catch {
+                $caseIndexRecord.status = "failed"
+                $caseIndexRecord.error = $_.Exception.Message
+            }
+            finally {
+                Close-WorkbookSafely -Workbook $caseWorkbook
+                [GC]::Collect()
+                [GC]::WaitForPendingFinalizers()
+            }
+
+            $batchIndex += $caseIndexRecord
+        }
+
+        $batchOutputIndexPath = Join-Path $resolvedBatchOutputRoot "batch-output-index.json"
+        Write-JsonFile -Path $batchOutputIndexPath -Value ([ordered]@{
+            batch_id = [string]$batchManifest.batch_id
+            output_root = $batchOutputRootRepoPath
+            cases = @($batchIndex)
+        })
+
+        $batchDriverRun = [ordered]@{
+            batch_manifest_path = Convert-ToRepoRelativePath -PathValue $resolvedBatchManifestPath -RepoRoot $repoRoot
+            batch_id = [string]$batchManifest.batch_id
+            output_dir = $batchOutputRootRepoPath
+            started_at_utc = $batchStartUtc
+            completed_at_utc = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+            worker = [ordered]@{
+                excel_reused = $true
+                excel_version = [string]$batchExcel.Version
+                excel_build = [string]$batchExcel.Build
+                macro_mode = $batchMacroMode
+            }
+            case_counts = [ordered]@{
+                total = @($batchIndex).Count
+                succeeded = @($batchIndex | Where-Object { $_.status -eq "succeeded" }).Count
+                failed = @($batchIndex | Where-Object { $_.status -ne "succeeded" }).Count
+            }
+            emitted_files = @(
+                "{0}/batch-output-index.json" -f $batchOutputRootRepoPath
+            ) + @(
+                $batchIndex |
+                ForEach-Object {
+                    if (-not [string]::IsNullOrWhiteSpace([string]$_.capture_path)) {
+                        [string]$_.capture_path
+                    }
+                }
+            )
+        }
+        Write-JsonFile -Path (Join-Path $resolvedBatchOutputRoot "driver-run.json") -Value $batchDriverRun
+
+        Write-Host ("emitted batch observation bundle to {0}" -f $batchOutputRootRepoPath)
+        return
+    }
+    finally {
+        if ($null -ne $worker -and $null -ne $worker.excel) {
+            try {
+                $worker.excel.Quit()
+            }
+            catch {
+            }
+            Release-ComObject -ComObject $worker.excel
+            [GC]::Collect()
+            [GC]::WaitForPendingFinalizers()
+        }
+    }
+}
+
+if ([string]::IsNullOrWhiteSpace($ScenarioPath)) {
+    throw "ScenarioPath is required when BatchManifestPath is not supplied."
+}
+
 $resolvedScenarioPath = Resolve-FullPath -BasePath $repoRoot -CandidatePath $ScenarioPath
 $resolvedOutputDir = Resolve-FullPath -BasePath $repoRoot -CandidatePath $OutputDir
 
@@ -1652,9 +2344,9 @@ $excel = $null
 $workbook = $null
 $macroMode = "force_disable_requested"
 
-try {
-    $excel = New-Object -ComObject Excel.Application
-    $excel.Visible = $false
+    try {
+        $excel = New-Object -ComObject Excel.Application
+        $excel.Visible = $false
     $excel.DisplayAlerts = $false
     $excel.AskToUpdateLinks = $false
 

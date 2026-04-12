@@ -59,6 +59,7 @@ dependencies = [
 name = "oxxlplay-cli"
 version = "0.1.0"
 dependencies = [
+ "oxxlplay-scenario",
  "serde_json",
 ]
 
